@@ -2,11 +2,6 @@ import { Poppins} from "next/font/google";
 import "./globals.css";
 import {
   ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
 } from "@clerk/nextjs";
 import NavBar from "@/components/NavBar";
 
@@ -30,7 +25,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${poppins.variable}  antialiased`}
       >
-        <ClerkProvider>
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
           <NavBar />
           {children}
         </ClerkProvider>
