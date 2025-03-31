@@ -1,0 +1,11 @@
+"use client"
+
+function page() {
+  return (
+    <div>
+      contact us
+    </div>
+  )
+}
+
+export default page
