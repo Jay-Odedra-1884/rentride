@@ -3,7 +3,7 @@ import Image from "next/image";
 
 function Card() {
   return (
-    <Link href={"/vehicleId"}>
+    <Link href={"/vehicles/8160086234"}>
       <div className="w-max h-auto flex flex-col gap-2 bg-gray-200 rounded-xl p-4 hover:scale-105 hover:bg-gray-300 transition-all duration-300 shadow-lg">
       <div className="w-full h-36 flex items-center">
         <Image src="/car1.svg" width={250} height={300} alt="car" />
@@ -49,7 +49,7 @@ function Card() {
       <hr className="border-black" />
       <div className="flex items-center justify-between text-xl">
         <span className="font-semibold">Price</span>
-        <span><span className="text-orange-400">1800$</span>/day</span>
+        <span><span className="text-orange-400">1900$</span>/day</span>
       </div>
       <div className="bg-[#1572D3] text-white text-center p-2 rounded-md mt-4 cursor-pointer hover:bg-black hover:scale-105 transition-all duration-300">
         Rent Now
