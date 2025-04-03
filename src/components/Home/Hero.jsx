@@ -14,6 +14,7 @@ function Hero() {
           <div className="w-1/2 flex flex-col gap-10">
             <h2 className="text-4xl mt-10 mb-10 lg:m-0 lg:text-6xl font-semibold">
               Find, book and rent a car{" "}
+              <br />
               <span className="text-[#1572D3]">
                 <FlipWords words={["Easily", "At best price", "Hassle-free"]} />{" "}
                 <Image

@@ -1,15 +1,15 @@
 import Image from "next/image"
 import Link from "next/link"
 
-function RentalCard() {
+function RentalCard({data}) {
   return (
-    <Link href={"/rental/8160086234"}>
+    <div>
       <div className="h-auto flex flex-col gap-2 rounded-xl p-4 hover:scale-105 hover:border-black transition-all duration-300 border">
       <div className="w-full h-36 flex items-center">
-        <Image src="/car1.svg" width={250} height={300} alt="car" />
+        <Image src={data.image} width={250} height={300} alt="car" />
       </div>
       <div className="flex justify-between">
-      <h2 className="font-semibold text-xl">BMW M4</h2>
+      <h2 className="font-semibold text-xl">{data.name}</h2>
       <p className="flex gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -29,13 +29,13 @@ function RentalCard() {
       <hr className="border-black" />
       <div className="flex items-center justify-between text-xl">
         <span className="font-semibold">Price</span>
-        <span><span className="text-orange-400">1900$</span>/day</span>
+        <span><span className="text-orange-400">{data.price}₹</span>/day</span>
       </div>
       <div className="bg-black text-white text-center p-2 rounded-md mt-4 cursor-pointer hover:bg-black hover:scale-105 transition-all duration-300">
         Edit Details
       </div>
     </div>
-    </Link>
+    </div>
   )
 }
 

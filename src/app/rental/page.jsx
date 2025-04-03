@@ -14,18 +14,55 @@ import {
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-function page() {
+function Page() {
+  const [vehicles, setVehicles] = useState([
+    {
+      image: "/car1.svg",
+      name: "BMW M4",
+      passenger: "4",
+      type: "Automatic",
+      airConditioning: "Air Conditioning",
+      doors: "4",
+      rating: "4.8",
+      price: "10000",
+      rental: "City Rentals",
+    },
+    {
+      image:
+        "https://i.pinimg.com/736x/9e/ca/e5/9ecae5a5505b76b0f41b69eae06be1f9.jpg",
+      name: "Mahindra Thar",
+      passenger: "4",
+      type: "Manual",
+      airConditioning: "Air Conditioning",
+      doors: "3",
+      rating: "4.5",
+      price: "5000",
+      rental: "City Rentals",
+    },
+    {
+      image:
+        "https://wallpapers.com/images/hd/white-mahindra-bolero-side-view-v56o5ghhb4nm6s7r-2.png",
+      name: "Mahindra Bolero",
+      passenger: "7",
+      type: "Manual",
+      airConditioning: "Air Conditioning",
+      doors: "5",
+      rating: "4.9",
+      price: "4000",
+      rental: "Drive Easy",
+    },
+  ]);
+
   const [formData, setFormData] = useState({
-    carName: "",
-    brandName: "",
-    carNumber: "",
-    imageUrl: "",
+    image: "",
+    name: "",
+    passenger: "",
+    type: "",
+    airConditioning: "",
+    doors: "",
+    rating: "",
     price: "",
-    gearType: "",
-    acType: "",
-    passengerCapacity: "",
-    numberOfDoors: "",
-    carOwnerName: "",
+    rental: "",
     documents: null,
   });
 
@@ -40,8 +77,21 @@ function page() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would handle the form submission, e.g., API call
+    const newVehicle = { ...formData };
+    setVehicles((prev) => [...prev, newVehicle]); // Add new vehicle to the state
+    // Reset form data after submission
+    setFormData({
+      image: "",
+      name: "",
+      passenger: "",
+      type: "",
+      airConditioning: "",
+      doors: "",
+      rating: "",
+      price: "",
+      rental: "",
+      documents: null,
+    });
   };
 
   const containerVariants = {
@@ -64,12 +114,11 @@ function page() {
   };
 
   return (
-    <div className=" px-10 mt-6">
+    <div className="px-10 mt-6">
       <div className="flex justify-between">
         <h2 className="font-semibold text-3xl">My Cars</h2>
         <Drawer>
           <DrawerTrigger>
-            {" "}
             <div className="bg-black text-white cursor-pointer px-4 py-1 rounded-sm">
               + Add new car
             </div>
@@ -79,7 +128,7 @@ function page() {
               <DrawerTitle>
                 <div className="flex justify-center items-center h-auto w-full px-4">
                   <motion.form
-                    className="w-full max-w-4xl bg-white rounded-3xl p-6 border "
+                    className="w-full max-w-4xl bg-white rounded-3xl p-6 border"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -97,8 +146,8 @@ function page() {
                         <input
                           type="text"
                           placeholder="Car Name"
-                          name="carName"
-                          value={formData.carName}
+                          name="name"
+                          value={formData.name}
                           onChange={handleChange}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
@@ -109,7 +158,7 @@ function page() {
                           type="text"
                           placeholder="Brand Name"
                           name="brandName"
-                          value={formData.brandName}
+                          value={formData.brandName || ""}
                           onChange={handleChange}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
@@ -118,9 +167,9 @@ function page() {
                       <motion.div variants={itemVariants}>
                         <input
                           type="text"
-                          placeholder="GJXXAXXXX"
+                          placeholder="Car Number"
                           name="carNumber"
-                          value={formData.carNumber}
+                          value={formData.carNumber || ""}
                           onChange={handleChange}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
@@ -131,8 +180,8 @@ function page() {
                       <input
                         type="text"
                         placeholder="Image URL"
-                        name="imageUrl"
-                        value={formData.imageUrl}
+                        name="image"
+                        value={formData.image}
                         onChange={handleChange}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       />
@@ -142,7 +191,7 @@ function page() {
                       <motion.div variants={itemVariants}>
                         <input
                           type="text"
-                          placeholder="price(₹)"
+                          placeholder="Price (₹)"
                           name="price"
                           value={formData.price}
                           onChange={handleChange}
@@ -152,8 +201,8 @@ function page() {
 
                       <motion.div variants={itemVariants}>
                         <select
-                          name="gearType"
-                          value={formData.gearType}
+                          name="type"
+                          value={formData.type}
                           onChange={handleChange}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-no-repeat"
                           style={{
@@ -171,8 +220,8 @@ function page() {
 
                       <motion.div variants={itemVariants}>
                         <select
-                          name="acType"
-                          value={formData.acType}
+                          name="airConditioning"
+                          value={formData.airConditioning}
                           onChange={handleChange}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-no-repeat"
                           style={{
@@ -182,7 +231,7 @@ function page() {
                             backgroundSize: "1.5em 1.5em",
                           }}
                         >
-                          <option value="">AC/NonAC</option>
+                          <option value="">AC/Non-AC</option>
                           <option value="ac">AC</option>
                           <option value="nonac">Non-AC</option>
                         </select>
@@ -194,8 +243,8 @@ function page() {
                         <input
                           type="number"
                           placeholder="Passenger"
-                          name="passengerCapacity"
-                          value={formData.passengerCapacity}
+                          name="passenger"
+                          value={formData.passenger}
                           onChange={handleChange}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
@@ -205,8 +254,8 @@ function page() {
                         <input
                           type="number"
                           placeholder="Number of doors"
-                          name="numberOfDoors"
-                          value={formData.numberOfDoors}
+                          name="doors"
+                          value={formData.doors}
                           onChange={handleChange}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
@@ -217,8 +266,8 @@ function page() {
                       <input
                         type="text"
                         placeholder="Car Owner Name"
-                        name="carOwnerName"
-                        value={formData.carOwnerName}
+                        name="rental"
+                        value={formData.rental}
                         onChange={handleChange}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       />
@@ -227,12 +276,13 @@ function page() {
                     <motion.div className="mb-8" variants={itemVariants}>
                       <input
                         type="file"
-                        placeholder="Upload Docs. :"
+                        placeholder="Upload Docs."
                         name="documents"
                         onChange={handleFileChange}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       />
                     </motion.div>
+
                     <div className="flex justify-center gap-4">
                       <motion.div
                         className="flex justify-start"
@@ -269,13 +319,14 @@ function page() {
           </DrawerContent>
         </Drawer>
       </div>
+
       <div className="mt-4 flex gap-3 flex-wrap">
-        <RentalCard />
-        <RentalCard />
-        <RentalCard />
+        {vehicles.map((vehicle, index) => (
+          <RentalCard data={vehicle} key={index} />
+        ))}
       </div>
     </div>
   );
 }
 
-export default page;
+export default Page;
