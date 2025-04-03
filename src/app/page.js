@@ -3,10 +3,16 @@ import HowItsWorks from "@/components/Home/HowItsWorks";
 import PopularDeals from "@/components/Home/PopularDeals";
 import SearchInput from "@/components/Home/SearchInput";
 import WhyChooseUs from "@/components/Home/WhyChooseUs";
+import NavBar from "@/components/NavBar";
+import { checkUser } from "@/lib/checkUser";
+import { Divide } from "lucide-react";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+    await  checkUser();
   return (
+     <div>
+       <NavBar />
     <div className="w-full h-auto mb-10">
       <Hero />
       <SearchInput />
@@ -15,5 +21,6 @@ export default function Home() {
       <WhyChooseUs />
       <PopularDeals />
     </div>
+     </div>
   );
 }

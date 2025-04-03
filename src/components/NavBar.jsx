@@ -4,8 +4,11 @@ import { SignedOut, SignUpButton, UserButton, useUser } from "@clerk/nextjs"
 import { SignedIn } from "@clerk/nextjs"
 import { SignInButton } from "@clerk/nextjs"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 function NavBar() {
+
+  const router = useRouter()
 
   const { user } = useUser();
 
@@ -15,9 +18,9 @@ function NavBar() {
         <Image src='/Logo.png' width={120} height={120} alt="RentRide"></Image>
       </div>
       <div className="hidden lg:flex gap-8 text-center items-center justify-center">
-        <div className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Became a rental</div>
-        <div className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Rental deals</div>
-        <div className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">How it work</div>
+        <div onClick={() => {router.push("/rental")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Became a rental</div>
+        <div onClick={() => {router.push("/vehicles")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Rental deals</div>
+        <div onClick={() => {router.push("")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">How it work</div>
         <div className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Why choose us</div>
       </div>
       <div className="flex">

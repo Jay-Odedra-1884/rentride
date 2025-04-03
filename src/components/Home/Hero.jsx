@@ -26,7 +26,7 @@ function Hero() {
               </span>
             </h2>
             <button
-              onClick={() => {router.push("/all-cars")}}
+              onClick={() => {router.push("/vehicles")}}
               className="group relative overflow-hidden bg-[#1572D3] hover:bg-blue-700 text-white font-medium px-7 py-3 rounded-lg shadow-lg transition-all duration-300 w-56 h-14">
               <div className="relative w-full h-full">
                 <span className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out transform group-hover:translate-x-full">

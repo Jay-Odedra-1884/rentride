@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  clerkUserId String   @unique
+  name        String?
+  email       String   @unique
+  imageUrl    String?
+  vehicles    Vehicle[]  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Vehicle {
+  id          String   @id @default(uuid())
+  name        String 
+  imageUrl    String
+  type        VehicleType  
+  gearType    GearType
+  doors       Int
+  passengerCapacity  Int
+  price       Int
+  rating      Float?   @default(0)
+  vehicleNumber   String @unique
+  ownerId     String
+  owner       Owner     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  customerId  String?
+  customer    User? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  airConditioning   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum VehicleType {
+  CAR
+  TRUCK
+  BIKE
+  SUV
+  SEDAN
+  VAN
+  ELECTRIC
+}
+
+enum GearType {
+  MANUAL
+  AUTOMATIC
+}
+
+model Owner {
+  id        String    @id @default(uuid())
+  name      String
+  email     String?   @unique
+  vehicles  Vehicle[] 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
