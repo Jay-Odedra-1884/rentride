@@ -11,88 +11,96 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { useState } from "react";
 import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useFetch from "@/hooks/useFetch";
+import { createVehicle } from "../../../actions/vehicle";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-function Page() {
-  const [vehicles, setVehicles] = useState([
-    {
-      image: "/car1.svg",
-      name: "BMW M4",
-      passenger: "4",
-      type: "Automatic",
-      airConditioning: "Air Conditioning",
-      doors: "4",
-      rating: "4.8",
-      price: "10000",
-      rental: "City Rentals",
-    },
-    {
-      image:
-        "https://i.pinimg.com/736x/9e/ca/e5/9ecae5a5505b76b0f41b69eae06be1f9.jpg",
-      name: "Mahindra Thar",
-      passenger: "4",
-      type: "Manual",
-      airConditioning: "Air Conditioning",
-      doors: "3",
-      rating: "4.5",
-      price: "5000",
-      rental: "City Rentals",
-    },
-    {
-      image:
-        "https://wallpapers.com/images/hd/white-mahindra-bolero-side-view-v56o5ghhb4nm6s7r-2.png",
-      name: "Mahindra Bolero",
-      passenger: "7",
-      type: "Manual",
-      airConditioning: "Air Conditioning",
-      doors: "5",
-      rating: "4.9",
-      price: "4000",
-      rental: "Drive Easy",
-    },
-  ]);
+const formSchema = z.object({
+  name: z.string().min(1, { message: "Car name is required" }),
+  brandName: z.string().min(1, { message: "Brand name is required" }),
+  imageUrl: z.string().url({ message: "Invalid URL" }),
+  type: z.enum([
+    "CAR",
+    "TRUCK",
+    "BIKE",
+    "SUV",
+    "SEDAN",
+    "VAN",
+    "ELECTRIC",
+    "LUXURY",
+  ]),
+  gearType: z.enum(["AUTOMATIC", "MANUAL"]),
+  doors: z.number(),
+  passengerCapacity: z
+    .number()
+    .min(1, { message: "Passenger capacity is required" }),
+  price: z.number().min(1, { message: "Price is required" }),
+  rating: z
+    .number()
+    .min(0)
+    .max(5, { message: "Rating must be between 0 and 5" }),
+  vehicleNumber: z
+    .string()
+    .regex(/^[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$/, {
+      message: "Invalid vehicle number",
+    }),
+  airConditioning: z.boolean(),
+  // OwnerName: z.string().min(1, { message: "Owner name is required" }),
+});
 
-  const [formData, setFormData] = useState({
-    image: "",
-    name: "",
-    passenger: "",
-    type: "",
-    airConditioning: "",
-    doors: "",
-    rating: "",
-    price: "",
-    rental: "",
-    documents: null,
+function page() {
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      brandName: "",
+      imageUrl: null,
+      type: undefined,
+      gearType: undefined,
+      doors: undefined,
+      passengerCapacity: undefined,
+      price: undefined,
+      rating: 0.0,
+      vehicleNumber: "",
+      airConditioning: true,
+    },
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+  const {data:newVehicle,loading:createVehicleLoading,error,fn:createVehicleFn} = useFetch(createVehicle)
+
+  
+
+  const onSubmit = async (data) => {
+    try {
+      await createVehicleFn(data);
+      reset();
+      setIsDrawerOpen(false);
+      toast.success("Vehicle created successfully");
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
-  const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, documents: e.target.files[0] }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newVehicle = { ...formData };
-    setVehicles((prev) => [...prev, newVehicle]); // Add new vehicle to the state
-    // Reset form data after submission
-    setFormData({
-      image: "",
-      name: "",
-      passenger: "",
-      type: "",
-      airConditioning: "",
-      doors: "",
-      rating: "",
-      price: "",
-      rental: "",
-      documents: null,
-    });
-  };
+  useEffect(()=>{
+    if(error){
+      toast.error(error.message)
+      console.log(error.message)
+    }
+  },[error])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -117,7 +125,7 @@ function Page() {
     <div className="px-10 mt-6">
       <div className="flex justify-between">
         <h2 className="font-semibold text-3xl">My Cars</h2>
-        <Drawer>
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
           <DrawerTrigger>
             <div className="bg-black text-white cursor-pointer px-4 py-1 rounded-sm">
               + Add new car
@@ -132,7 +140,7 @@ function Page() {
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit(onSubmit)}
                   >
                     <motion.h2
                       className="text-2xl font-bold mb-6"
@@ -147,10 +155,14 @@ function Page() {
                           type="text"
                           placeholder="Car Name"
                           name="name"
-                          value={formData.name}
-                          onChange={handleChange}
+                          {...register("name", { required: true })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
+                        {errors.name && (
+                          <p className="text-red-500">
+                            Please enter valid car name
+                          </p>
+                        )}
                       </motion.div>
 
                       <motion.div variants={itemVariants}>
@@ -158,21 +170,29 @@ function Page() {
                           type="text"
                           placeholder="Brand Name"
                           name="brandName"
-                          value={formData.brandName || ""}
-                          onChange={handleChange}
+                          {...register("brandName", { required: true })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
+                        {errors.brandName && (
+                          <p className="text-red-500">
+                            Please enter valid Brand
+                          </p>
+                        )}
                       </motion.div>
 
                       <motion.div variants={itemVariants}>
                         <input
                           type="text"
-                          placeholder="Car Number"
-                          name="carNumber"
-                          value={formData.carNumber || ""}
-                          onChange={handleChange}
+                          placeholder="GJXXAXXXX"
+                          name="vehicleNumber"
+                          {...register("vehicleNumber", { required: true })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
+                        {errors.vehicleNumber && (
+                          <p className="text-red-500">
+                            Please enter number (ex:GJ12B1234)
+                          </p>
+                        )}
                       </motion.div>
                     </div>
 
@@ -180,30 +200,37 @@ function Page() {
                       <input
                         type="text"
                         placeholder="Image URL"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
+                        name="imageUrl"
+                        {...register("imageUrl", { required: true })}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       />
+                      {errors.imageUrl && (
+                        <p className="text-red-500">Please enter URL</p>
+                      )}
                     </motion.div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                       <motion.div variants={itemVariants}>
                         <input
-                          type="text"
-                          placeholder="Price (₹)"
+                          type="number"
+                          placeholder="price(₹)"
                           name="price"
-                          value={formData.price}
-                          onChange={handleChange}
+                          {...register("price", {
+                            required: true,
+                            setValueAs: (v) =>
+                              v === "" ? undefined : Number(v),
+                          })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
+                        {errors.price && (
+                          <p className="text-red-500">Please enter price</p>
+                        )}
                       </motion.div>
 
                       <motion.div variants={itemVariants}>
                         <select
-                          name="type"
-                          value={formData.type}
-                          onChange={handleChange}
+                          name="gearType"
+                          {...register("gearType", { required: true })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-no-repeat"
                           style={{
                             backgroundImage:
@@ -213,16 +240,23 @@ function Page() {
                           }}
                         >
                           <option value="">Auto/Manual</option>
-                          <option value="automatic">Automatic</option>
-                          <option value="manual">Manual</option>
+                          <option value="AUTOMATIC">Automatic</option>
+                          <option value="MANUAL">Manual</option>
                         </select>
+                        {errors.gearType && (
+                          <p className="text-red-500">
+                            Please select gear type
+                          </p>
+                        )}
                       </motion.div>
 
                       <motion.div variants={itemVariants}>
                         <select
                           name="airConditioning"
-                          value={formData.airConditioning}
-                          onChange={handleChange}
+                          {...register("airConditioning", {
+                            required: true,
+                            setValueAs: (v) => v === "true",
+                          })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-no-repeat"
                           style={{
                             backgroundImage:
@@ -231,23 +265,34 @@ function Page() {
                             backgroundSize: "1.5em 1.5em",
                           }}
                         >
-                          <option value="">AC/Non-AC</option>
-                          <option value="ac">AC</option>
-                          <option value="nonac">Non-AC</option>
+                          <option value="">AC/NonAC</option>
+                          <option value="true">AC</option>
+                          <option value="false">Non-AC</option>
                         </select>
+                        {errors.airConditioning && (
+                          <p className="text-red-500">Please select</p>
+                        )}
                       </motion.div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                       <motion.div variants={itemVariants}>
                         <input
                           type="number"
-                          placeholder="Passenger"
-                          name="passenger"
-                          value={formData.passenger}
-                          onChange={handleChange}
+                          placeholder="Passenger Capacity"
+                          name="passengerCapacity"
+                          {...register("passengerCapacity", {
+                            required: true,
+                            setValueAs: (v) =>
+                              v === "" ? undefined : Number(v),
+                          })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
+                        {errors.passengerCapacity && (
+                          <p className="text-red-500">
+                            Please enter valid passenger capacity
+                          </p>
+                        )}
                       </motion.div>
 
                       <motion.div variants={itemVariants}>
@@ -255,33 +300,44 @@ function Page() {
                           type="number"
                           placeholder="Number of doors"
                           name="doors"
-                          value={formData.doors}
-                          onChange={handleChange}
+                          {...register("doors", { required: true, setValueAs: (v) => v === "" ? undefined : Number(v) })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
+                        {errors.doors && (
+                          <p className="text-red-500">
+                            Please enter valid number of doors
+                          </p>
+                        )}
+                      </motion.div>
+                      <motion.div variants={itemVariants}>
+                        <select
+                          name="type"
+                          {...register("type", { required: true })}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-no-repeat"
+                          style={{
+                            backgroundImage:
+                              'url(\'data:image/svg+xml;charset=US-ASCII,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M5 8l5 5 5-5z" fill="%23343a40"/></svg>\')',
+                            backgroundPosition: "right 0.5rem center",
+                            backgroundSize: "1.5em 1.5em",
+                          }}
+                        >
+                          <option value="">Vehicle Type</option>
+                          <option value="CAR">CAR</option>
+                          <option value="TRUCK">TRUCK</option>
+                          <option value="BIKE">BIKE</option>
+                          <option value="SUV">SUV</option>
+                          <option value="SEDAN">SEDAN</option>
+                          <option value="VAN">VAN</option>
+                          <option value="ELECTRIC">ELECTRIC</option>
+                          <option value="LUXURY">LUXURY</option>
+                        </select>
+                        {errors.type && (
+                          <p className="text-red-500">
+                            Please select vehicle type
+                          </p>
+                        )}
                       </motion.div>
                     </div>
-
-                    <motion.div className="mb-6" variants={itemVariants}>
-                      <input
-                        type="text"
-                        placeholder="Car Owner Name"
-                        name="rental"
-                        value={formData.rental}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                      />
-                    </motion.div>
-
-                    <motion.div className="mb-8" variants={itemVariants}>
-                      <input
-                        type="file"
-                        placeholder="Upload Docs."
-                        name="documents"
-                        onChange={handleFileChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                      />
-                    </motion.div>
 
                     <div className="flex justify-center gap-4">
                       <motion.div
@@ -307,7 +363,7 @@ function Page() {
                           type="submit"
                           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg"
                         >
-                          Submit
+                          {createVehicleLoading ? "Creating..." : "Create"}
                         </button>
                       </motion.div>
                     </div>

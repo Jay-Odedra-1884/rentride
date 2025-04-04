@@ -19,7 +19,7 @@ export default async function Home() {
       <HowItsWorks />
       <Image src="/companyList.png" width={1550} height={100} alt="company" />
       <WhyChooseUs />
-      <PopularDeals />
+      {/* <PopularDeals /> */}
     </div>
      </div>
   );

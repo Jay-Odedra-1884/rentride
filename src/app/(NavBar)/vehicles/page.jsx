@@ -1,221 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SideBar from "@/components/SideBar";
 import Card from "@/components/ui/Card";
 import { Filter, ChevronDown } from 'lucide-react';
+import { getAllVehicle } from '../../../../actions/vehicle';
 
 function Vehicles() {
 
-  //for a testing purpose only data
-  const vehicles =[
-    {
-      image: "/car1.svg",
-      name: "BMW M4",
-      passenger: "4",
-      type: "Automatic",
-      airConditioning: "Air Conditioning",
-      doors: "4",
-      rating: "4.8",
-      price: "1000",
-      rental: "City Rentals",
-    },
-    {
-      "image": "https://i.pinimg.com/736x/9e/ca/e5/9ecae5a5505b76b0f41b69eae06be1f9.jpg",
-      "name": "Mahindra Thar",
-      "passenger": "4",
-      "type": "Manual",
-      "airConditioning": "Air Conditioning",
-      "doors": "3",
-      "rating": "4.5",
-      "price": "5000",
-      "rental": "City Rentals"
-    },
-    {
-      "image": "https://wallpapers.com/images/hd/white-mahindra-bolero-side-view-v56o5ghhb4nm6s7r-2.png",
-      "name": "Mahindra Bolero",
-      "passenger": "7",
-      "type": "Manual",
-      "airConditioning": "Air Conditioning",
-      "doors": "5",
-      "rating": "4.9",
-      "price": "4000",
-      "rental": "Drive Easy"
-    },
-    {
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwWGnI_AZmR9GFc4atD5_7M6MqRMG4WZIg70U5DkRdscl_-rA3Qz6OFmzpVXHnuaDzzpI&usqp=CAU",
-      "name": "Mahindra Scorpio",
-      "passenger": "5",
-      "type": "Auto",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.6",
-      "price": "5500",
-      "rental": "Outdoor Adventures"
-    },
-    {
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyh-qiYNEhQn_Xy2BTTfwEROvoNGSGnSYmFQ&s",
-      "name": "Jeep Wrangler",
-      "passenger": "5",
-      "type": "Manual",
-      "airConditioning": "Non A/C",
-      "doors": "4",
-      "rating": "4.3",
-      "price": "7000",
-      "rental": "Adventure Rentals"
-    },
-    {
-      "image": "https://pngimg.com/d/toyota_PNG1917.png",
-      "name": "Toyota Corolla",
-      "passenger": "5",
-      "type": "Auto",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.5",
-      "price": "4000",
-      "rental": "City Rentals"
-    },
-    {
-      "image": "https://www.pngplay.com/wp-content/uploads/13/Honda-Civic-EG-Hatch-Transparent-File.png",
-      "name": "Honda Civic",
-      "passenger": "5",
-      "type": "Manual",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.3",
-      "price": "3800",
-      "rental": "Drive Easy"
-    },
-    {
-      "image": "https://pngimg.com/d/mustang_PNG30.png",
-      "name": "Ford Mustang",
-      "passenger": "4",
-      "type": "Auto",
-      "airConditioning": "Air Conditioning",
-      "doors": "2",
-      "rating": "4.8",
-      "price": "10000",
-      "rental": "Luxury Rides"
-    },
-    {
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi5asRqXLs97s7mc8_dpyFqdBgHiPgPivZQg&s",
-      "name": "Tata Ace",
-      "passenger": "2",
-      "type": "Manual",
-      "airConditioning": "Non A/C",
-      "doors": "2",
-      "rating": "4.2",
-      "price": "3500",
-      "rental": "Heavy Load Movers"
-    },
-    {
-      "image": "https://images.jdmagicbox.com/quickquotes/images_main/ashok-leyland-dost-pick-up-van-2219902646-u1u1munq.jpg",
-      "name": "Ashok Leyland Dost",
-      "passenger": "2",
-      "type": "Manual",
-      "airConditioning": "Air Conditioning",
-      "doors": "2",
-      "rating": "4.4",
-      "price": "4000",
-      "rental": "Truck Hub"
-    },
-    {
-      "image": "https://i.pinimg.com/736x/2a/c3/dd/2ac3dd76c89d2b38ff4b3672740cd25f.jpg",
-      "name": "Royal Enfield Classic 350",
-      "passenger": "2",
-      "type": "Manual",
-      "airConditioning": "Non A/C",
-      "doors": "0",
-      "rating": "4.7",
-      "price": "1500",
-      "rental": "Bike Rentals"
-    },
-    {
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsKhf6zeYGMUrV12MF5weTcjAgsiB5LC1Ylg&s",
-      "name": "Ather 450X",
-      "passenger": "2",
-      "type": "Auto",
-      "airConditioning": "Non A/C",
-      "doors": "0",
-      "rating": "4.8",
-      "price": "1800",
-      "rental": "Eco Rides"
-    },
-    {
-      "image": "https://cdn.bikedekho.com/processedimages/ola-electric/2025-s1-pro/source/2025-s1-pro679ce24f98f96.jpg?imwidth=880",
-      "name": "Ola S1 Pro",
-      "passenger": "2",
-      "type": "Auto",
-      "airConditioning": "Non A/C",
-      "doors": "0",
-      "rating": "4.6",
-      "price": "1600",
-      "rental": "Green Wheels"
-    },
-    {
-      "image": "https://c4.wallpaperflare.com/wallpaper/60/647/828/hyundai-elantra-avante-side-view-wallpaper-thumb.jpg",
-      "name": "Hyundai Elantra",
-      "passenger": "5",
-      "type": "Auto",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.6",
-      "price": "4500",
-      "rental": "Elite Rentals"
-    },
-    {
-      "image": "https://www.pngplay.com/wp-content/uploads/13/BMW-3-Series-2019-Transparent-Images.png",
-      "name": "BMW 3 Series",
-      "passenger": "5",
-      "type": "Auto",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.7",
-      "price": "9000",
-      "rental": "Prestige Wheels"
-    },
-    {
-      "image": "https://as1.ftcdn.net/jpg/05/70/87/04/1000_F_570870490_e4qBslQl1elGp2BuaoUDb2ajdqt1ncDn.jpg",
-      "name": "Mercedes-Benz C-Class",
-      "passenger": "5",
-      "type": "Auto",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.8",
-      "price": "10000",
-      "rental": "Luxury Rides"
-    },
-    {
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn19Ji9HXyC65tXqHW_8ivNHQT4BV6dO8CAQ&s",
-      "name": "Audi A4",
-      "passenger": "5",
-      "type": "Auto",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.6",
-      "price": "9500",
-      "rental": "Elite Rentals"
-    },
-    {
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr4UvQo6nRNuEUdwjHyA9OULFFb6mAXeR75Q&s",
-      "name": "Nissan Versa",
-      "passenger": "5",
-      "type": "Manual",
-      "airConditioning": "Air Conditioning",
-      "doors": "4",
-      "rating": "4.2",
-      "price": "3200",
-      "rental": "Budget Cars"
-    },
-    
-  ]
-  
-  
-
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
-  
+
+  const [data, setData] = useState([]); 
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const AllVehicle = await getAllVehicle(); 
+        setData(AllVehicle);
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      }
+    };
+    fetchVehicles();
+    console.log(data)
+  }, []); 
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -252,7 +60,7 @@ function Vehicles() {
         {/* Product grid - responsive layout */}
         <div className="flex-1">
           <div className="flex flex-wrap justify-center gap-4">
-            {vehicles.map((vehicle, index) => (
+            {data.map((vehicle, index) => (
               <Card key={index} data={vehicle} />
             ))}
           </div>

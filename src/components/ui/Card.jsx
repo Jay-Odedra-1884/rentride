@@ -2,11 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 
 function Card({data}) {
+  console.log(data)
+  console.log(data.imageUrl)
   return (
-    <Link href={"/vehicles/8160086234"}>
+    <Link href={`/vehicles/${data.id}`}>
       <div className="w-max h-auto flex flex-col gap-2 bg-gray-200 rounded-xl p-4 hover:scale-105 hover:bg-gray-300 transition-all duration-300 shadow-lg">
       <div className="w-full h-36 flex items-center overflow-hidden">
-        <Image src={data.image} width={250} height={300} alt="car" />
+        <Image src={data.imageUrl} width={250} height={300} alt="car" />
       </div>
       <h2 className="font-semibold text-xl">{data.name}</h2>
       <p className="flex gap-2">
@@ -28,17 +30,17 @@ function Card({data}) {
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
             <i className="fa-regular fa-user"></i>
-            <span className="">{data.passanger} Passagers</span>
+            <span className="">{data.passengerCapacity} Passagers</span>
           </div>
           <div className="flex gap-2 items-center">
           <i className="fa-solid fa-code-branch"></i>
-            <span className="">{data.type}</span>
+            <span className="">{data.gearType === "AUTOMATIC" ? "Auto" : "Manual"}</span>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
           <i className="fa-solid fa-snowflake"></i>
-            <span className="">{data.airConditioning}</span>
+            <span className="">{data.airConditioning ? "A/C" : "Non A/C"}</span>
           </div>
           <div className="flex gap-2 items-center">
           <i className="fa-solid fa-arrow-right-from-bracket"></i>

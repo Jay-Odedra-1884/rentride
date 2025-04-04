@@ -4,6 +4,7 @@ import {
   ClerkProvider,
 } from "@clerk/nextjs";
 import NavBar from "@/components/NavBar";
+import { Toaster } from "@/components/ui/sonner";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         className={`${poppins.variable}  antialiased`}
       >
           {children}
+          <Toaster />
       </body>
     </html>
         </ClerkProvider>

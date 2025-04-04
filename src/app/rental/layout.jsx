@@ -1,6 +1,8 @@
 import RentalNavBar from "@/components/RentalNavBar"
+import { checkOwner } from "@/lib/checkOwner"
 
-function layout({children}) {
+async function layout({children}) {
+  await checkOwner()
   return (
     <div className=" w-full min-h-screen" >
       <RentalNavBar />

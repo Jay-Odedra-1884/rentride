@@ -27,7 +27,9 @@ model Vehicle {
   gearType    GearType
   doors       Int
   passengerCapacity  Int
+  brandName   String
   price       Int
+  isBooked      Boolean?   @default(false)
   rating      Float?   @default(0)
   vehicleNumber   String @unique
   ownerId     String
@@ -47,6 +49,7 @@ enum VehicleType {
   SEDAN
   VAN
   ELECTRIC
+  LUXURY
 }
 
 enum GearType {
@@ -56,6 +59,7 @@ enum GearType {
 
 model Owner {
   id        String    @id @default(uuid())
+  clerkUserId  String 
   name      String
   email     String?   @unique
   vehicles  Vehicle[] 
