@@ -2,13 +2,14 @@ import { currentUser } from "@clerk/nextjs/server"
 import { db } from "./prisma";
 
 export const checkOwner = async()=>{
-    const user = await currentUser();
-
-    if (!user) {
-        return null;
-    }
-
+    
     try {
+        const user = await currentUser();
+    
+        if (!user) {
+            return null;
+        }
+        
         const loggedInAdmin = await db.owner.findFirst({
             where:{
                 clerkUserId: user.id,

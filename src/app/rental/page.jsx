@@ -16,9 +16,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useFetch from "@/hooks/useFetch";
-import { createVehicle } from "../../../actions/vehicle";
+import { createVehicle, getVehicleByOwnerId } from "../../../actions/vehicle";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+
+
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Car name is required" }),
@@ -37,13 +41,13 @@ const formSchema = z.object({
   gearType: z.enum(["AUTOMATIC", "MANUAL"]),
   doors: z.number(),
   passengerCapacity: z
-    .number()
-    .min(1, { message: "Passenger capacity is required" }),
+  .number()
+  .min(1, { message: "Passenger capacity is required" }),
   price: z.number().min(1, { message: "Price is required" }),
   rating: z
-    .number()
-    .min(0)
-    .max(5, { message: "Rating must be between 0 and 5" }),
+  .number()
+  .min(0)
+  .max(5, { message: "Rating must be between 0 and 5" }),
   vehicleNumber: z
     .string()
     .regex(/^[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$/, {
@@ -53,9 +57,28 @@ const formSchema = z.object({
   // OwnerName: z.string().min(1, { message: "Owner name is required" }),
 });
 
-function page() {
+function Page() {
 
+
+  const {data:newVehicle,loading:createVehicleLoading,error,fn:createVehicleFn} = useFetch(createVehicle)
+  const router = useRouter(); 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+
+      try {
+        const AllVehicle = await getVehicleByOwnerId();
+        setData(AllVehicle);
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      }
+    };
+    fetchVehicles();
+
+  }, [newVehicle]); 
 
   const {
     register,
@@ -80,16 +103,13 @@ function page() {
   });
 
 
-  const {data:newVehicle,loading:createVehicleLoading,error,fn:createVehicleFn} = useFetch(createVehicle)
-
-  
-
   const onSubmit = async (data) => {
     try {
       await createVehicleFn(data);
       reset();
       setIsDrawerOpen(false);
       toast.success("Vehicle created successfully");
+      router.refresh();
     } catch (error) {
       console.error(error.message);
     }
@@ -377,7 +397,7 @@ function page() {
       </div>
 
       <div className="mt-4 flex gap-3 flex-wrap">
-        {vehicles.map((vehicle, index) => (
+        {data.map((vehicle, index) => (
           <RentalCard data={vehicle} key={index} />
         ))}
       </div>

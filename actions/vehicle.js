@@ -69,13 +69,11 @@ export const createVehicle = async (data)=>{
     }
 }
 
-export const getVehicleByOwnerId = async (ownerId) => {
+export const getVehicleByOwnerId = async () => {
     try {
-
         const {userId}= await auth();
         if(!userId) throw new Error("Unauthorized");
 
-        console.log(userId)
 
         const user = await db.owner.findFirst({
             where:{
@@ -87,9 +85,10 @@ export const getVehicleByOwnerId = async (ownerId) => {
 
 
         const vehicles = await db.vehicle.findMany({
-            where: { ownerId: ownerId },
+            where: { ownerId:user.id },
         });
-
+        revalidatePath("/vehicle")
+        revalidatePath("/rental")
         return vehicles;
     } catch (error) {
         throw new Error(error.message);

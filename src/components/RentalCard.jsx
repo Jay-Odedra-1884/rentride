@@ -5,8 +5,8 @@ function RentalCard({data}) {
   return (
     <div>
       <div className="h-auto flex flex-col gap-2 rounded-xl p-4 hover:scale-105 hover:border-black transition-all duration-300 border">
-      <div className="w-full h-36 flex items-center">
-        <Image src={data.image} width={250} height={300} alt="car" />
+      <div className="w-full h-36 flex items-center overflow-hidden">
+        <Image src={data.imageUrl} width={250} height={300} alt="car" />
       </div>
       <div className="flex justify-between">
       <h2 className="font-semibold text-xl">{data.name}</h2>
