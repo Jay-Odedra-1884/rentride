@@ -141,8 +141,18 @@ function Page() {
     },
   };
 
+
+  if(data.length == 0) {
+    return (
+      <div>
+        
+      </div>
+    )
+  }
+
   return (
-    <div className="px-10 mt-6">
+    data.length > 0 ? (
+      <div className="px-10 mt-6">
       <div className="flex justify-between">
         <h2 className="font-semibold text-3xl">My Cars</h2>
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -367,7 +377,9 @@ function Page() {
                         whileTap={{ scale: 0.95 }}
                       >
                         <DrawerClose>
-                          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg">
+                          <button 
+                            type="button"
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg">
                             Cancel
                           </button>
                         </DrawerClose>
@@ -402,6 +414,11 @@ function Page() {
         ))}
       </div>
     </div>
+    ) : (
+      <div className="w-full text-2xl text-center">
+        <h2>Loading...</h2>
+      </div>
+    )
   );
 }
 

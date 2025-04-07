@@ -20,7 +20,17 @@ export const getAllVehicle = async ()=>{
 
     if(!user) throw new Error("User not found")
 
-    const data = await db.vehicle.findMany()
+        const data = await db.vehicle.findMany({
+            include: {
+              owner: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          });
+          console.log(data);
+          
     return data
     
    } catch (error) {
@@ -31,7 +41,14 @@ export const getAllVehicle = async ()=>{
 //to get a one vehicle data
 export const getVehicleById = async (id) => {
     const data = await db.vehicle.findFirst({
-        where: {id : id}
+        where: {id : id},
+        include: {
+            owner: {
+              select: {
+                name: true,
+              },
+            },
+          },
     });
     return data
 };
@@ -102,8 +119,6 @@ export const updateVehicle = async (id, data) => {
         const {userId}= await auth();
         if(!userId) throw new Error("Unauthorized");
 
-        console.log(userId)
-
         const user = await db.owner.findFirst({
             where:{
                 clerkUserId:userId
@@ -111,7 +126,6 @@ export const updateVehicle = async (id, data) => {
         })
 
         if(!user) throw new Error("User not found")
-
 
         const vehicle = await db.vehicle.update({
             where: { id },

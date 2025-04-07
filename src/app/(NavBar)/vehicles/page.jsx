@@ -50,7 +50,8 @@ function Vehicles() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    data.length > 0 ? (
+      <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <h1 className="text-3xl font-semibold">Explore all vehicles</h1>
         <hr className="my-4" />
@@ -79,7 +80,7 @@ function Vehicles() {
         <div
           className={`md:w-72 shrink-0  ${isSidebarOpen ? "block" : "hidden md:block"}`}
         >
-          <SideBar onFilterChange={setFilters} />
+        <SideBar onFilterChange={setFilters} />
         </div>
 
         {/* Product grid - responsive layout */}
@@ -119,6 +120,11 @@ function Vehicles() {
         )}
       </div>
     </div>
+    ) : (
+      <div className="w-full text-2xl text-center">
+        <h2>Loading...</h2>
+      </div>
+    )
   );
 }
 

@@ -1,7 +1,12 @@
+"use client"
+
 import Image from "next/image"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 function RentalCard({data}) {
+
+  const router = useRouter()
+
   return (
     <div>
       <div className="h-auto flex flex-col gap-2 rounded-xl p-4 hover:scale-105 hover:border-black transition-all duration-300 border">
@@ -23,7 +28,7 @@ function RentalCard({data}) {
             clipRule="evenodd"
           />
         </svg>
-        4.8
+        {data.rating}
       </p>
       </div>
       <hr className="border-black" />
@@ -31,7 +36,7 @@ function RentalCard({data}) {
         <span className="font-semibold">Price</span>
         <span><span className="text-orange-400">{data.price}₹</span>/day</span>
       </div>
-      <div className="bg-black text-white text-center p-2 rounded-md mt-4 cursor-pointer hover:bg-black hover:scale-105 transition-all duration-300">
+      <div onClick={() => {router.push(`/rental/${data.id}/edit`)}} className="bg-black text-white text-center p-2 rounded-md mt-4 cursor-pointer hover:bg-black hover:scale-105 transition-all duration-300">
         Edit Details
       </div>
     </div>

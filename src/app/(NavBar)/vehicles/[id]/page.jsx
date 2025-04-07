@@ -8,6 +8,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import { GiCarDoor } from "react-icons/gi";
 import { FcCancel } from "react-icons/fc";
 import { IoIosCheckbox } from "react-icons/io";
+import Image from "next/image";
 
 export default function CarDetail() {
   const router = useRouter();
@@ -55,31 +56,34 @@ export default function CarDetail() {
       {/* Back Button */}
       <button
         onClick={() => router.back()}
-        className="text-xl rounded-full p-2 border w-fit hover:bg-gray-100 mb-4 cursor-pointer"
+        className="text-xl rounded-lg p-2 border w-fit text-gray-500 hover:bg-gray-100 mb-4 cursor-pointer hover:text-black hover:scale-105 transition-all duration-200"
       >
-        <HiArrowLeft className="text-2xl h-5 w-5 " />
+        <HiArrowLeft className="text-2xl h-5 w-5  " />
       </button>
 
       {/* Top Section */}
-      <div className="flex flex-col lg:flex-row gap-6 bg-[#f2f6fd] p-6 rounded-xl">
+      <div className="w-full flex flex-col lg:flex-row gap-6">
         {/* Left - Car Image */}
-        <div className="bg-[#dcebfb] rounded-xl w-full lg:w-1/2 p-4 flex justify-center">
+        <div className="bg-[#dcebfb] rounded-xl w-full lg:w-1/2 p-4 flex justify-center items-center">
           <img
             src={data.imageUrl}
             alt={data.name}
-            className="object-contain h-[350px] mt-10"
+            className="object-contain h-[250px] mt-10"
           />
+          {/* <Image src={data.imageUrl} width={400} height={300} alt={data.name} /> */}
         </div>
 
         {/* Right - Car Info */}
-        <div className="w-full lg:w-1/2 space-y-2 px-10">
+        <div className="w-full lg:w-1/2 space-y-2 pr-20">
           <div className="flex items-start justify-between ">
             <div>
               <h1 className="text-3xl font-bold">{data.name}</h1>
-              <p className="text-gray-600">By {data.owner?.name || "Owner"}</p>
+              <p className="text-gray-600">By {data.owner?.name||"OwnerName"}</p>
+              {console.log(data)
+              }
             </div>
             <div className="flex items-center text-yellow-500 font-semibold text-lg">
-              ⭐ {data.rating?.toFixed(1) || "0.0"}
+              ⭐ {data.rating?.toFixed(1) || "No rating"}
             </div>
           </div>
 
@@ -108,12 +112,6 @@ export default function CarDetail() {
             </div>
             <div className="flex items-center gap-2">🏷️ {data.brandName}</div>
             <div className="flex items-center gap-2">🚗 Type: {data.type}</div>
-            <div className="flex items-center gap-2">
-              📅 Created: {new Date(data.createdAt).toLocaleDateString()}
-            </div>
-            <div className="flex items-center gap-2">
-              🕒 Updated: {new Date(data.updatedAt).toLocaleString()}
-            </div>
             <div className="flex items-center gap-2 ">
               <span className="text-xl text-green-500">
                 {data.isBooked ? <FcCancel /> : <IoIosCheckbox />}
@@ -121,9 +119,12 @@ export default function CarDetail() {
               Status: {data.isBooked ? "Not Available" : "Available"}
             </div>
           </div>
+          <br />
+          <br />
+          <br />
 
           <div className="text-xl font-semibold mt-4">
-            Price: <span className="text-orange-500">{data.price}$</span>
+            Price: <span className="text-orange-500">{data.price}₹</span>
             <span className="text-gray-500"> /Day</span>
           </div>
 
