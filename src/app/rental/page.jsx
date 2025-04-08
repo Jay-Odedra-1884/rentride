@@ -65,6 +65,7 @@ function Page() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [data, setData] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -74,6 +75,8 @@ function Page() {
         setData(AllVehicle);
       } catch (error) {
         console.error("Error fetching vehicles:", error);
+      } finally {
+        setLoadingData(false);
       }
     };
     fetchVehicles();
@@ -142,16 +145,15 @@ function Page() {
   };
 
 
-  if(data.length == 0) {
+  if(loadingData) {
     return (
       <div>
-        
+        Loading......
       </div>
     )
   }
 
   return (
-    data.length > 0 ? (
       <div className="px-10 mt-6">
       <div className="flex justify-between">
         <h2 className="font-semibold text-3xl">My Cars</h2>
@@ -407,18 +409,19 @@ function Page() {
           </DrawerContent>
         </Drawer>
       </div>
-
-      <div className="mt-4 flex gap-3 flex-wrap">
+      {data.length > 0 ? (
+        <div className="mt-4 flex gap-3 flex-wrap">
         {data.map((vehicle, index) => (
           <RentalCard data={vehicle} key={index} />
         ))}
       </div>
+      ) : (
+        <div className="w-full flex justify-center mt-20">
+          <p className="text-xl">No vehicles...</p>
+        </div>
+      )}
+      
     </div>
-    ) : (
-      <div className="w-full text-2xl text-center">
-        <h2>Loading...</h2>
-      </div>
-    )
   );
 }
 
