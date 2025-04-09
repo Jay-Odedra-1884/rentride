@@ -12,6 +12,7 @@ export default async function Home() {
     await  checkUser();
   return (
      <div>
+      {/* harsh */}
        <NavBar />
     <div className="w-full h-auto mb-10">
       <Hero />
