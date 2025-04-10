@@ -10,6 +10,43 @@ import { FcCancel } from "react-icons/fc";
 import { IoIosCheckbox } from "react-icons/io";
 import Image from "next/image";
 
+import React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const bookingSchema = z
+  .object({
+    pickupLocation: z.string().min(1, "Pickup location is required"),
+    dropoffLocation: z.string().min(1, "Dropoff location is required"),
+    startTime: z.string().min(1, "Start time is required"),
+    endTime: z.string().min(1, "End time is required"),
+  })
+  // Check that startTime is not in the past
+  .refine(
+    (data) => {
+      const start = new Date(data.startTime);
+      const now = new Date();
+      return start >= now;
+    },
+    {
+      path: ["startTime"],
+      message: "Invalid Date and Time",
+    }
+  )
+  // Check that endTime is after startTime
+  .refine(
+    (data) => {
+      const start = new Date(data.startTime);
+      const end = new Date(data.endTime);
+      return end > start;
+    },
+    {
+      path: ["endTime"],
+      message: "Invalid Date and Time",
+    }
+  );
+
 export default function CarDetail() {
   const router = useRouter();
   const [data, setData] = useState();
@@ -44,6 +81,22 @@ export default function CarDetail() {
     }
   };
 
+  // Booking Form (pop up)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(bookingSchema),
+  });
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+    reset();
+    document.getElementById("book_ride_form").close();
+  };
+
+  
   if (!data) {
     return (
       <div className="text-center py-10 text-gray-500">
@@ -78,9 +131,10 @@ export default function CarDetail() {
           <div className="flex items-start justify-between ">
             <div>
               <h1 className="text-3xl font-bold">{data.name}</h1>
-              <p className="text-gray-600">By {data.owner?.name||"OwnerName"}</p>
-              {console.log(data)
-              }
+              <p className="text-gray-600">
+                By {data.owner?.name || "OwnerName"}
+              </p>
+              {console.log(data)}
             </div>
             <div className="flex items-center text-yellow-500 font-semibold text-lg">
               ⭐ {data.rating?.toFixed(1) || "No rating"}
@@ -133,7 +187,12 @@ export default function CarDetail() {
               Booked
             </div>
           ) : (
-            <button className="mt-2 bg-blue-600 text-white w-full py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer">
+            <button
+              onClick={() =>
+                document.getElementById("book_ride_form")?.showModal()
+              }
+              className="mt-2 bg-blue-600 text-white w-full py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+            >
               Rent Now →
             </button>
           )}
@@ -156,6 +215,112 @@ export default function CarDetail() {
           Post
         </button>
       </div>
+
+      {/* Popup */}
+      <dialog
+        id="book_ride_form"
+        className="modal modal-bottom sm:modal-middle rounded-3xl sm:w-1/2 w-full"
+      >
+        <div className="flex justify-center items-center h-auto w-full p-4">
+          <form
+            method="dialog"
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full max-w-4xl bg-white rounded-3xl p-6 border"
+          >
+            <h3 className="text-2xl font-bold mb-6">Book Your Ride</h3>
+
+            <div className="grid grid-cols-1 gap-4">
+              {/* Pickup Location */}
+              <div>
+                <input
+                  type="text"
+                  placeholder="Enter pickup location"
+                  name="pickupLocation"
+                  {...register("pickupLocation", { required: true })}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+                {errors.pickupLocation && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.pickupLocation.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Dropoff Location */}
+              <div>
+                <input
+                  type="text"
+                  placeholder="Enter dropoff location"
+                  name="dropoffLocation"
+                  {...register("dropoffLocation", { required: true })}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+                {errors.dropoffLocation && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.dropoffLocation.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Start Time */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  Start Time
+                </label>
+                <input
+                  type="datetime-local"
+                  name="startTime"
+                  {...register("startTime", { required: true })}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+                {errors.startTime && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.startTime.message}
+                  </p>
+                )}
+              </div>
+
+              {/* End Time */}
+              <div>
+                <label className="block mb-1 font-medium text-gray-700">
+                  End Time
+                </label>
+                <input
+                  type="datetime-local"
+                  name="endTime"
+                  {...register("endTime", { required: true })}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                />
+                {errors.endTime && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.endTime.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="modal-action grid sm:grid-cols-2 gap-4">
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg"
+                >
+                  Book Ride
+                </button>
+                <button
+                  type="button"
+                  className="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg"
+                  onClick={() => {
+                    reset();
+                    document.getElementById("book_ride_form").close();
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </dialog>
     </div>
   );
 }
