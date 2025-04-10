@@ -96,7 +96,6 @@ export default function CarDetail() {
     document.getElementById("book_ride_form").close();
   };
 
-  
   if (!data) {
     return (
       <div className="text-center py-10 text-gray-500">
@@ -219,7 +218,7 @@ export default function CarDetail() {
       {/* Popup */}
       <dialog
         id="book_ride_form"
-        className="modal modal-bottom sm:modal-middle rounded-3xl sm:w-1/2 w-full"
+        className="modal rounded-3xl sm:w-1/2 w-full backdrop:bg-black/50 backdrop:backdrop-blur-sm fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
       >
         <div className="flex justify-center items-center h-auto w-full p-4">
           <form
