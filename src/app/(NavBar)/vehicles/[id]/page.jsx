@@ -14,6 +14,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useFetch from "@/hooks/useFetch";
+import { bookVehicle } from "../../../../../actions/Booking";
+import { toast } from "sonner";
 
 const bookingSchema = z
   .object({
@@ -81,6 +84,14 @@ export default function CarDetail() {
     }
   };
 
+  //backend function call for booking form
+  const {
+    data: bookingData,
+    loading: vehicleBookingLoading,
+    error,
+    fn: bookVehicleFn,
+  } = useFetch(bookVehicle);
+
   // Booking Form (pop up)
   const {
     register,
@@ -90,11 +101,21 @@ export default function CarDetail() {
   } = useForm({
     resolver: zodResolver(bookingSchema),
   });
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
+
+  const onSubmit = async (data) => {
+    await bookVehicleFn(data,id)
+    toast.success("Your Ride is Booked");
     reset();
     document.getElementById("book_ride_form").close();
   };
+
+  //error
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+      console, log(error.message);
+    }
+  }, [error]);
 
   if (!data) {
     return (
@@ -303,7 +324,7 @@ export default function CarDetail() {
                   type="submit"
                   className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg"
                 >
-                  Book Ride
+                 {vehicleBookingLoading ? "Booking..." : "Book Ride"}
                 </button>
                 <button
                   type="button"

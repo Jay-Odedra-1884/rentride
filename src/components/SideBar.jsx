@@ -144,7 +144,7 @@ function SideBar({ onFilterChange }) {
         
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-lg">Price</h2>
-            <RotateCcw className="w-5 h-5" onClick={() => {setMinPrice(0); setMaxPrice(undefined)}}/>
+            <RotateCcw className="w-5 h-5" onClick={() => {setMinPrice(""); setMaxPrice("")}}/>
         </div>
         <div className="flex gap-2">
           <div className="bg-gray-200 rounded-sm py-1 px-1">

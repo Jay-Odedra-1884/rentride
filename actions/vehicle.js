@@ -61,8 +61,6 @@ export const createVehicle = async (data)=>{
         const {userId}= await auth();
         if(!userId) throw new Error("Unauthorized");
 
-        console.log(userId)
-
         const user = await db.owner.findFirst({
             where:{
                 clerkUserId:userId
