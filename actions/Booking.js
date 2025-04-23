@@ -13,22 +13,16 @@ export const bookVehicle = async (data, vehicleId) => {
     },
   });
 
-  const vehicle = await db.vehicle.findFirst({
-    where: {
-      id: vehicleId,
+  
+  const booking = await db.booking.create({
+    data: {
+      ...data,
+      startTime: new Date(`${data.startTime}:00`),
+      endTime: new Date(`${data.endTime}:00`),
+      userId: user.id,
+      vehicleId,
     },
   });
-
- const booking = await db.booking.create({
-   data: {
-     ...data,
-     startTime: new Date(`${data.startTime}:00`),
-     endTime: new Date(`${data.endTime}:00`),
-     userId: user.id,
-     vehicleId,
-   },
- });
-
 
   console.log(booking);
 };

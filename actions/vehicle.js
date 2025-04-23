@@ -5,164 +5,167 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 //to get all vehicles data
-export const getAllVehicle = async ()=>{
-   try {
+export const getAllVehicle = async () => {
+  try {
+    const { userId } = await auth();
 
-    const {userId}= await auth();
-
-    if(!userId) throw new Error("Unauthorized")
+    if (!userId) throw new Error("Unauthorized");
 
     const user = await db.user.findUnique({
-        where:{
-            clerkUserId:userId
-        }
-    })
+      where: {
+        clerkUserId: userId,
+      },
+    });
 
-    if(!user) throw new Error("User not found")
+    if (!user) throw new Error("User not found");
 
-        const data = await db.vehicle.findMany({
-            include: {
-              owner: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          });
-          console.log(data);
-          
-    return data
-    
-   } catch (error) {
-    throw new Error(error.message)
-   }
-}
+    const data = await db.vehicle.findMany({
+      where: {
+        NOT: {
+          status: "MAINTAINANCE",
+        },
+      },
+      include: {
+        owner: {
+          select: { name: true },
+        },
+        bookings: {
+          select: {
+            id: true, 
+            startTime: true, 
+            endTime: true, 
+            pickupLocation: true,
+            dropoffLocation: true,
+            userId: true, 
+            vehicleId: true, 
+            createdAt: true,
+          },
+        },
+      },
+    });
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 //to get a one vehicle data
 export const getVehicleById = async (id) => {
-    const data = await db.vehicle.findFirst({
-        where: {id : id},
-        include: {
-            owner: {
-              select: {
-                name: true,
-              },
-            },
-          },
-    });
-    return data
+  const data = await db.vehicle.findFirst({
+    where: { id: id },
+    include: {
+      owner: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+  return data;
 };
-
 
 //create vehicle
 
-export const createVehicle = async (data)=>{
-    try {
-        const {userId}= await auth();
-        if(!userId) throw new Error("Unauthorized");
+export const createVehicle = async (data) => {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
 
-        const user = await db.owner.findFirst({
-            where:{
-                clerkUserId:userId
-            }
-        })
+    const user = await db.owner.findFirst({
+      where: {
+        clerkUserId: userId,
+      },
+    });
 
-        if(!user) throw new Error("User not found")
+    if (!user) throw new Error("User not found");
 
-
-        const vehicle = await db.vehicle.create({
-            data:{
-                ...data,
-                ownerId:user.id
-            }
-        })
-        revalidatePath("/vehicle")
-        revalidatePath("/rental")
-        return vehicle
-    } catch (error) {
-        throw new Error(error.message)
-    }
-}
-
-export const getVehicleByOwnerId = async () => {
-    try {
-        const {userId}= await auth();
-        if(!userId) throw new Error("Unauthorized");
-
-
-        const user = await db.owner.findFirst({
-            where:{
-                clerkUserId:userId
-            }
-        })
-
-        if(!user) throw new Error("User not found")
-
-
-        const vehicles = await db.vehicle.findMany({
-            where: { ownerId:user.id },
-        });
-        revalidatePath("/vehicle")
-        revalidatePath("/rental")
-        return vehicles;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}
-
-
-
-export const updateVehicle = async (id, data) => {
-    try {
-        const {userId}= await auth();
-        if(!userId) throw new Error("Unauthorized");
-
-        const user = await db.owner.findFirst({
-            where:{
-                clerkUserId:userId
-            }
-        })
-
-        if(!user) throw new Error("User not found")
-
-        const vehicle = await db.vehicle.update({
-            where: { id },
-            data,
-        });
-        revalidatePath("/vehicle")
-        revalidatePath("/rental")
-        return vehicle;
-    } catch (error) {
-        throw new Error(error.message);
-    }
+    const vehicle = await db.vehicle.create({
+      data: {
+        ...data,
+        ownerId: user.id,
+      },
+    });
+    revalidatePath("/vehicle");
+    revalidatePath("/rental");
+    return vehicle;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
+export const getVehicleByOwnerId = async () => {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
 
-export const deleteVehicle = async (id) => {    
-    try {
-        const {userId}= await auth();
-        if(!userId) throw new Error("Unauthorized");
+    const user = await db.owner.findFirst({
+      where: {
+        clerkUserId: userId,
+      },
+    });
 
-        console.log(userId)
+    if (!user) throw new Error("User not found");
 
-        const user = await db.owner.findFirst({
-            where:{
-                clerkUserId:userId
-            }
-        })
+    const vehicles = await db.vehicle.findMany({
+      where: { ownerId: user.id },
+    });
+    revalidatePath("/vehicle");
+    revalidatePath("/rental");
+    return vehicles;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
-        if(!user) throw new Error("User not found")
+export const updateVehicle = async (id, data) => {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
 
+    const user = await db.owner.findFirst({
+      where: {
+        clerkUserId: userId,
+      },
+    });
 
-        const vehicle = await db.vehicle.delete({
-            where: { id },
-        });
+    if (!user) throw new Error("User not found");
 
-        revalidatePath("/vehicle")
-        revalidatePath("/rental")
-        return vehicle;
+    const vehicle = await db.vehicle.update({
+      where: { id },
+      data,
+    });
+    revalidatePath("/vehicle");
+    revalidatePath("/rental");
+    return vehicle;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}   
+export const deleteVehicle = async (id) => {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    console.log(userId);
+
+    const user = await db.owner.findFirst({
+      where: {
+        clerkUserId: userId,
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    const vehicle = await db.vehicle.delete({
+      where: { id },
+    });
+
+    revalidatePath("/vehicle");
+    revalidatePath("/rental");
+    return vehicle;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

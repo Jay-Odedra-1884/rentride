@@ -5,11 +5,12 @@ import SearchInput from "@/components/Home/SearchInput";
 import WhyChooseUs from "@/components/Home/WhyChooseUs";
 import NavBar from "@/components/NavBar";
 import { checkUser } from "@/lib/checkUser";
-import { Divide } from "lucide-react";
 import Image from "next/image";
+import { getOwnerDashboardData } from "../../actions/dashboard";
 
 export default async function Home() {
     await  checkUser();
+    await getOwnerDashboardData();
   return (
      <div>
        <NavBar />

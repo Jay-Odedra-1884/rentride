@@ -33,7 +33,6 @@ model Vehicle {
   passengerCapacity  Int
   brandName   String
   price       Int
-  isBooked      Boolean?   @default(false)
   rating      Float?   @default(0)
   vehicleNumber   String @unique
   ownerId     String
@@ -63,7 +62,6 @@ enum GearType {
 
 enum Status{
   AVAILABLE
-  BOOKED
   MAINTAINANCE
 }
 
