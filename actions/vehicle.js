@@ -58,10 +58,13 @@ export const getVehicleById = async (id) => {
       owner: {
         select: {
           name: true,
+          email:true
         },
       },
     },
   });
+
+  console.log(data);
   return data;
 };
 
