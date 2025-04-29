@@ -5,6 +5,7 @@ import SideBar from "@/components/SideBar";
 import Card from "@/components/ui/Card";
 import { Filter, ChevronDown } from "lucide-react";
 import { getAllVehicle } from "../../../../actions/vehicle";
+import { BarLoader } from "react-spinners";
 
 function Vehicles() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -26,12 +27,16 @@ function Vehicles() {
       );
     }
 
-    if(filters.minPrice) {
-      filtered = filtered.filter(vehicle => vehicle.price >= filters.minPrice)
+    if (filters.minPrice) {
+      filtered = filtered.filter(
+        (vehicle) => vehicle.price >= filters.minPrice
+      );
     }
 
-    if(filters.maxPrice) {
-      filtered = filtered.filter(vehicle => vehicle.price <= filters.maxPrice) 
+    if (filters.maxPrice) {
+      filtered = filtered.filter(
+        (vehicle) => vehicle.price <= filters.maxPrice
+      );
     }
 
     setFilteredData(filtered);
@@ -49,9 +54,8 @@ function Vehicles() {
     fetchVehicles();
   }, []);
 
-  return (
-    data.length > 0 ? (
-      <div className="container mx-auto px-4 py-8">
+  return data.length > 0 ? (
+    <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <h1 className="text-3xl font-semibold">Explore all vehicles</h1>
         <hr className="my-4" />
@@ -80,7 +84,7 @@ function Vehicles() {
         <div
           className={`md:w-72 shrink-0  ${isSidebarOpen ? "block" : "hidden md:block"}`}
         >
-        <SideBar onFilterChange={setFilters} />
+          <SideBar onFilterChange={setFilters} />
         </div>
 
         {/* Product grid - responsive layout */}
@@ -120,11 +124,10 @@ function Vehicles() {
         )}
       </div>
     </div>
-    ) : (
-      <div className="w-full text-2xl text-center">
-        <h2>Loading...</h2>
-      </div>
-    )
+  ) : (
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-30">
+      <BarLoader color="#3b82f6" height={6} width={150} />
+    </div>
   );
 }
 

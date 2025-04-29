@@ -31,13 +31,13 @@ export const getAllVehicle = async () => {
         },
         bookings: {
           select: {
-            id: true, 
-            startTime: true, 
-            endTime: true, 
+            id: true,
+            startTime: true,
+            endTime: true,
             pickupLocation: true,
             dropoffLocation: true,
-            userId: true, 
-            vehicleId: true, 
+            userId: true,
+            vehicleId: true,
             createdAt: true,
           },
         },
@@ -58,7 +58,7 @@ export const getVehicleById = async (id) => {
       owner: {
         select: {
           name: true,
-          email:true
+          email: true,
         },
       },
     },

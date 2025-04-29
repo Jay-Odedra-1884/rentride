@@ -21,8 +21,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-
-
+import { BarLoader } from "react-spinners";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Car name is required" }),
@@ -41,27 +40,29 @@ const formSchema = z.object({
   gearType: z.enum(["AUTOMATIC", "MANUAL"]),
   doors: z.number(),
   passengerCapacity: z
-  .number()
-  .min(1, { message: "Passenger capacity is required" }),
+    .number()
+    .min(1, { message: "Passenger capacity is required" }),
   price: z.number().min(1, { message: "Price is required" }),
   rating: z
-  .number()
-  .min(0)
-  .max(5, { message: "Rating must be between 0 and 5" }),
-  vehicleNumber: z
-    .string()
-    .regex(/^[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$/, {
-      message: "Invalid vehicle number",
-    }),
+    .number()
+    .min(0)
+    .max(5, { message: "Rating must be between 0 and 5" }),
+  vehicleNumber: z.string().regex(/^[A-Z]{2}\d{2}[A-Z]{1,2}\d{4}$/, {
+    message: "Invalid vehicle number",
+  }),
+  location: z.string().min(1, { message: "Location is required" }),
   airConditioning: z.boolean(),
   // OwnerName: z.string().min(1, { message: "Owner name is required" }),
 });
 
 function Page() {
-
-
-  const {data:newVehicle,loading:createVehicleLoading,error,fn:createVehicleFn} = useFetch(createVehicle)
-  const router = useRouter(); 
+  const {
+    data: newVehicle,
+    loading: createVehicleLoading,
+    error,
+    fn: createVehicleFn,
+  } = useFetch(createVehicle);
+  const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const [data, setData] = useState([]);
@@ -69,7 +70,6 @@ function Page() {
 
   useEffect(() => {
     const fetchVehicles = async () => {
-
       try {
         const AllVehicle = await getVehicleByOwnerId();
         setData(AllVehicle);
@@ -80,14 +80,13 @@ function Page() {
       }
     };
     fetchVehicles();
-
-  }, [newVehicle]); 
+  }, [newVehicle]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -101,10 +100,10 @@ function Page() {
       price: undefined,
       rating: 0.0,
       vehicleNumber: "",
+      location: "",
       airConditioning: true,
     },
   });
-
 
   const onSubmit = async (data) => {
     try {
@@ -118,12 +117,12 @@ function Page() {
     }
   };
 
-  useEffect(()=>{
-    if(error){
-      toast.error(error.message)
-      console.log(error.message)
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+      console.log(error.message);
     }
-  },[error])
+  }, [error]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -144,17 +143,16 @@ function Page() {
     },
   };
 
-
-  if(loadingData) {
+  if (loadingData) {
     return (
-      <div>
-        Loading......
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-30">
+        <BarLoader color="#3b82f6" height={6} width={150} />
       </div>
-    )
+    );
   }
 
   return (
-      <div className="px-10 mt-6">
+    <div className="px-10 mt-6">
       <div className="flex justify-between">
         <h2 className="font-semibold text-3xl">My Cars</h2>
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -224,6 +222,19 @@ function Page() {
                           <p className="text-red-500">
                             Please enter number (ex:GJ12B1234)
                           </p>
+                        )}
+                      </motion.div>
+
+                      <motion.div variants={itemVariants}>
+                        <input
+                          type="text"
+                          placeholder="Location (City/Town)"
+                          name="location"
+                          {...register("location", { required: true })}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        />
+                        {errors.location && (
+                          <p className="text-red-500">Please enter location</p>
                         )}
                       </motion.div>
                     </div>
@@ -332,7 +343,11 @@ function Page() {
                           type="number"
                           placeholder="Number of doors"
                           name="doors"
-                          {...register("doors", { required: true, setValueAs: (v) => v === "" ? undefined : Number(v) })}
+                          {...register("doors", {
+                            required: true,
+                            setValueAs: (v) =>
+                              v === "" ? undefined : Number(v),
+                          })}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         />
                         {errors.doors && (
@@ -379,9 +394,10 @@ function Page() {
                         whileTap={{ scale: 0.95 }}
                       >
                         <DrawerClose>
-                          <button 
+                          <button
                             type="button"
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg">
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg"
+                          >
                             Cancel
                           </button>
                         </DrawerClose>
@@ -411,16 +427,15 @@ function Page() {
       </div>
       {data.length > 0 ? (
         <div className="mt-4 flex gap-3 flex-wrap">
-        {data.map((vehicle, index) => (
-          <RentalCard data={vehicle} key={index} />
-        ))}
-      </div>
+          {data.map((vehicle, index) => (
+            <RentalCard data={vehicle} key={index} />
+          ))}
+        </div>
       ) : (
         <div className="w-full flex justify-center mt-20">
           <p className="text-xl">No vehicles...</p>
         </div>
       )}
-      
     </div>
   );
 }
