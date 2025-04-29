@@ -1,4 +1,22 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+
 function SearchInput() {
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    const query = new URLSearchParams();
+    if (location) query.set("location", location);
+    if (date) query.set("date", date);
+
+    router.push(`/vehicles?${query.toString()}`);
+  };
+
   return (
     <div className="flex flex-col items-center gap-2">
       <p className="text-xl font-semibold text-gray-400">
@@ -20,7 +38,9 @@ function SearchInput() {
           </svg>
           <input
             type="text"
-            placeholder="Location"
+            placeholder="Location (City/Town)"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
             className="w-full text-xl bg-transparent outline-none border-none ml-2"
           />
         </div>
@@ -28,11 +48,18 @@ function SearchInput() {
         <div className="w-2/5 h-full flex items-center">
           <input
             type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             placeholder="Enter Date"
             className="w-full text-xl text-gray-400 bg-transparent outline-none border-none ml-2"
           />
         </div>
-        <button className="bg-[#1572D3] w-1/5 text-white font-semibold py-2 rounded-lg ml-4 transition-all duration-300 hover:bg-black hover:scale-105">Search</button>
+        <button
+          onClick={handleSearch}
+          className="bg-[#1572D3] w-1/5 text-white font-semibold py-2 rounded-lg ml-4 transition-all duration-300 hover:bg-black hover:scale-105"
+        >
+          Search
+        </button>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useFetch from "@/hooks/useFetch";
 import { bookVehicle } from "../../../../../actions/Booking";
 import { toast } from "sonner";
+import { BarLoader } from "react-spinners";
 
 const bookingSchema = z
   .object({
@@ -103,7 +104,7 @@ export default function CarDetail() {
   });
 
   const onSubmit = async (data) => {
-    await bookVehicleFn(data,id)
+    await bookVehicleFn(data, id);
     toast.success("Your Ride is Booked");
     reset();
     document.getElementById("book_ride_form").close();
@@ -119,8 +120,8 @@ export default function CarDetail() {
 
   if (!data) {
     return (
-      <div className="text-center py-10 text-gray-500">
-        Loading vehicle details...
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-30">
+        <BarLoader color="#3b82f6" height={6} width={150} />
       </div>
     );
   }
@@ -324,7 +325,7 @@ export default function CarDetail() {
                   type="submit"
                   className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg"
                 >
-                 {vehicleBookingLoading ? "Booking..." : "Book Ride"}
+                  {vehicleBookingLoading ? "Booking..." : "Book Ride"}
                 </button>
                 <button
                   type="button"

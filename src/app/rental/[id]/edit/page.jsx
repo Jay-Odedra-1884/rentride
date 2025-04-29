@@ -13,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useFetch from "@/hooks/useFetch";
 import { toast } from "sonner";
+import { BarLoader } from "react-spinners";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Car name is required" }),
@@ -360,10 +361,8 @@ function page() {
           </div>
         </div>
       ) : (
-        <div className="h-screen w-screen">
-          <div className="flex items-center justify-center">
-            Loading data.....
-          </div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-30">
+          <BarLoader color="#3b82f6" height={6} width={150} />
         </div>
       )}
     </div>
