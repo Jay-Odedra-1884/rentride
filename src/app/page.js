@@ -10,7 +10,7 @@ import { getOwnerDashboardData } from "../../actions/dashboard";
 
 export default async function Home() {
     await  checkUser();
-    await getOwnerDashboardData();
+    // await getOwnerDashboardData();
   return (
      <div>
        <NavBar />
