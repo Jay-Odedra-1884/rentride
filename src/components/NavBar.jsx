@@ -23,7 +23,7 @@ function NavBar() {
         <div onClick={() => {router.push("/rental")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Became a rental</div>
         <div onClick={() => {router.push("/vehicles")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Rental deals</div>
         <div onClick={() => {router.push("")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">How it work</div>
-        <div className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Why choose us</div>
+        <div onClick={()=>{router.push("/contact-us")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Contect Us</div>
       </div>
       <div className="flex">
         <SignedOut>

@@ -1,5 +1,7 @@
 "use client";
 
+import NavBar from "@/components/NavBar";
+
 const teamMembers = [
   {
     name: "Bhargav Maru",
@@ -29,29 +31,36 @@ const teamMembers = [
 
 function AboutUs() {
   return (
-    <div className="bg-white py-20 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">About Us</h2>
+    <div>
+      <NavBar />
+      <div className="bg-white py-15 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+            About Us
+          </h2>
 
-        {teamMembers.map((member, index) => (
-          <div
-            key={index}
-            className={`flex flex-col md:flex-row ${
-              index % 2 !== 0 ? "md:flex-row-reverse" : ""
-            } items-center mb-16 gap-8`}
-          >
-            <img
-              src={member.image}
-              alt={member.name}
-              className="w-32 h-32 rounded-full object-cover shadow-lg"
-            />
-            <div className="text-center md:text-left">
-              <h3 className="text-xl font-semibold text-gray-800">{member.name}</h3>
-              <p className="text-blue-600 font-medium mb-2">{member.role}</p>
-              <p className="text-gray-600 max-w-xl">{member.bio}</p>
+          {teamMembers.map((member, index) => (
+            <div
+              key={index}
+              className={`flex flex-col md:flex-row ${
+                index % 2 !== 0 ? "md:flex-row-reverse" : ""
+              } items-center mb-16 gap-8`}
+            >
+              <img
+                src={member.image}
+                alt={member.name}
+                className="w-32 h-32 rounded-full object-cover shadow-lg"
+              />
+              <div className="text-center md:text-left">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {member.name}
+                </h3>
+                <p className="text-blue-600 font-medium mb-2">{member.role}</p>
+                <p className="text-gray-600 max-w-xl">{member.bio}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

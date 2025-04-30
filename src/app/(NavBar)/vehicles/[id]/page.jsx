@@ -153,7 +153,8 @@ export default function CarDetail() {
             <div>
               <h1 className="text-3xl font-bold">{data.name}</h1>
               <p className="text-gray-600">
-                By {data.owner?.name || "OwnerName"}
+                {console.log(data.owner?.name)}
+                {data.owner?.name ? `By ${data.owner.name}` : "By Owner"}
               </p>
               {console.log(data)}
             </div>
