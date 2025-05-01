@@ -18,6 +18,7 @@ import useFetch from "@/hooks/useFetch";
 import { bookVehicle } from "../../../../../actions/Booking";
 import { toast } from "sonner";
 import { BarLoader } from "react-spinners";
+import Script from 'next/script';
 
 const bookingSchema = z
   .object({
@@ -85,7 +86,6 @@ export default function CarDetail() {
     }
   };
 
-  //backend function call for booking form
   const {
     data: bookingData,
     loading: vehicleBookingLoading,
@@ -104,8 +104,33 @@ export default function CarDetail() {
   });
 
   const onSubmit = async (data) => {
-    await bookVehicleFn(data, id);
-    toast.success("Your Ride is Booked");
+
+    const res = await fetch("/api/order", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: 500 }),
+        });
+    
+        const order = await res.json();
+    
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'RentRide',
+          description: 'Test Transaction',
+          order_id: order.id,
+          handler: async function (response) {
+            toast.success(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
+            await bookVehicleFn(data, id);
+            toast.success("Your Ride is Booked");
+
+          },
+        };
+    
+        const razor = new window.Razorpay(options);
+        razor.open();
+
     reset();
     document.getElementById("book_ride_form").close();
   };
@@ -127,6 +152,7 @@ export default function CarDetail() {
   }
   return (
     <div className="min-h-screen bg-white px-4 md:px-16 py-8">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       {/* Back Button */}
       <button
         onClick={() => router.back()}
@@ -245,7 +271,7 @@ export default function CarDetail() {
       >
         <div className="flex justify-center items-center h-auto w-full p-4">
           <form
-            method="dialog"
+            method="POST"
             onSubmit={handleSubmit(onSubmit)}
             className="w-full max-w-4xl bg-white rounded-3xl p-6 border"
           >
@@ -324,6 +350,7 @@ export default function CarDetail() {
               <div className="modal-action grid sm:grid-cols-2 gap-4">
                 <button
                   type="submit"
+                  
                   className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg"
                 >
                   {vehicleBookingLoading ? "Booking..." : "Book Ride"}
