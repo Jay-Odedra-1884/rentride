@@ -1,4 +1,7 @@
 export default function DashboardPage() {
+
+
+  
   const user = {
     name: "abc",
     email: "abc@gmail.com",

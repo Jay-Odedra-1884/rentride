@@ -8,7 +8,6 @@ import { HiArrowLeft } from "react-icons/hi";
 import { GiCarDoor } from "react-icons/gi";
 import { FcCancel } from "react-icons/fc";
 import { IoIosCheckbox } from "react-icons/io";
-import Image from "next/image";
 
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +18,8 @@ import { bookVehicle } from "../../../../../actions/Booking";
 import { toast } from "sonner";
 import { BarLoader } from "react-spinners";
 import Script from 'next/script';
+import CommentBox from "@/components/CommentBox";
+import CommentDisplay from "@/components/CommentDisplay";
 
 const bookingSchema = z
   .object({
@@ -56,13 +57,6 @@ export default function CarDetail() {
   const router = useRouter();
   const [data, setData] = useState();
   const { id } = useParams();
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([
-    {
-      user: "User Name",
-      text: "Just took a test drive of the new Creta last weekend — and wow, Hyundai really nailed the interior this time.",
-    },
-  ]);
 
   useEffect(() => {
     const featchVehicleById = async () => {
@@ -78,13 +72,6 @@ export default function CarDetail() {
 
     featchVehicleById();
   }, []);
-
-  const handleCommentSubmit = () => {
-    if (comment.trim()) {
-      setComments([{ user: "User Name", text: comment }, ...comments]);
-      setComment("");
-    }
-  };
 
   const {
     data: bookingData,
@@ -248,22 +235,10 @@ export default function CarDetail() {
       </div>
 
       {/* Comment Input */}
-      <div className="mt-6 border rounded-xl px-4 py-2 flex justify-between items-center h-30">
-        <input
-          type="text"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="Add Comments here.........."
-          className=" text-lg w-full bg-transparent focus:outline-none "
-        />
-        <button
-          onClick={handleCommentSubmit}
-          className="text-l bg-blue-600 px-4 py-2 rounded-xl  text-white font-normal hover:bg-blue-700 cursor-pointer"
-        >
-          Post
-        </button>
-      </div>
-
+      <CommentBox/>
+      {/* Comment Display */}
+      <CommentDisplay/>
+      
       {/* Popup */}
       <dialog
         id="book_ride_form"
