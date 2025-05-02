@@ -28,6 +28,7 @@ function ContactUs() {
                   type="text"
                   placeholder="John Trengaly"
                   className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
               <div>
@@ -38,6 +39,7 @@ function ContactUs() {
                   type="email"
                   placeholder="hello@example.com"
                   className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
               <div className="md:col-span-2">
@@ -48,6 +50,7 @@ function ContactUs() {
                   type="text"
                   placeholder="I want to hire you quickly"
                   className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
               <div className="md:col-span-2">
@@ -58,6 +61,7 @@ function ContactUs() {
                   rows="5"
                   placeholder="Write your message..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  required
                 ></textarea>
               </div>
             </form>
@@ -65,14 +69,14 @@ function ContactUs() {
             <div className="flex justify-center text-center pt-4 gap-4">
               <button
                 onClick={() => router.push("/about-us")}
-                className="inline-block bg-white border border-blue-600 text-blue-600 hover:bg-blue-800 hover:text-white font-medium px-6 py-2 rounded-xl transition"
+                className="inline-block bg-white border border-blue-600 text-blue-600 hover:bg-blue-800 hover:text-white font-medium px-6 py-2 rounded-xl transition cursor-pointer"
               >
                 About Us
               </button>
 
               <button
                 type="submit"
-                className="inline-block bg-blue-600 border border-blue-600 text-white hover:bg-blue-800 font-medium px-6 py-2 rounded-xl transition"
+                className="inline-block bg-blue-600 border border-blue-600 text-white hover:bg-blue-800 font-medium px-6 py-2 rounded-xl transition cursor-pointer"
               >
                 Send Message
               </button>

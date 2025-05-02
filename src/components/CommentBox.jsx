@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 const CommentBox = () => {
   const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(1);
   const { id } = useParams();
   const router = useRouter();
 
@@ -19,14 +19,16 @@ const CommentBox = () => {
   } = useFetch(createComment);
 
   const handleCommentSubmit = async () => {
-    try {
-      await createCommentFn({ msg: comment, rating, vehicleId: id });
-      toast.success("Comment created");
-      setComment("");
-      setRating(0);
-      router.refresh();
-    } catch (error) {
-       toast.error(error.message);
+    if (comment) {
+      try {
+        await createCommentFn({ msg: comment, rating, vehicleId: id });
+        toast.success("Comment created");
+        setComment("");
+        setRating(0);
+        router.refresh();
+      } catch (error) {
+        toast.error(error.message);
+      }
     }
   };
 
@@ -54,7 +56,7 @@ const CommentBox = () => {
         />
         <button
           onClick={handleCommentSubmit}
-          className="bg-blue-600 px-4 py-2 rounded-xl text-white hover:bg-blue-700 transition"
+          className="bg-blue-600 cursor-pointer px-4 py-2 rounded-xl text-white hover:bg-blue-700 transition"
         >
           {creatCommentLoading ? "Posting..." : "Post"}
         </button>

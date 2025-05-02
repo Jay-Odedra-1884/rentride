@@ -20,10 +20,10 @@ function NavBar() {
           <Image src='/Logo.png' width={120} height={120} alt="RentRide"></Image>
       </div>
       <div className="hidden lg:flex gap-8 text-center items-center justify-center">
-        <div onClick={() => {router.push("/rental")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Became a rental</div>
-        <div onClick={() => {router.push("/vehicles")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Rental deals</div>
-        <div onClick={() => {router.push("")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">How it work</div>
-        <div onClick={()=>{router.push("/contact-us")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Contect Us</div>
+        <div onClick={() => {router.push("/rental")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Became a Rental</div>
+        <div onClick={() => {router.push("/vehicles")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Rental Deals</div>
+        <div onClick={() => {router.push("")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">How It Works</div>
+        <div onClick={()=>{router.push("/contact-us")}} className="cursor-pointer hover:text-black hover:scale-110 transition-all duration-300">Contact Us</div>
       </div>
       <div className="flex">
         <SignedOut>

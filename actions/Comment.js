@@ -61,7 +61,7 @@ export const getAllCommentById = async (vehicleId)=>{
            },
          });
 
-         console.log(allComments);
+         console.log("✅ allComments:",allComments);
          return allComments;
 
     } catch (error) {
