@@ -30,7 +30,7 @@ export const getUserBookedVehicle = async()=>{
               },
             });
 
-            return bookings;
+            return { user, bookings };
 
     } catch (error) {
          throw new Error(error.message);

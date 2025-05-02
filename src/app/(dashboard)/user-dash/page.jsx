@@ -1,7 +1,32 @@
+"use client";
+
+import useFetch from "@/hooks/useFetch";
+import { toast } from "sonner";
+import { getUserBookedVehicle } from "../../../../actions/user";
+import { useEffect } from "react";
+
 export default function DashboardPage() {
+  const {
+    data: userBookedData,
+    loading: userDashboardLoading,
+    error,
+    fn: getUserBookedVehicleFn,
+  } = useFetch(getUserBookedVehicle);
 
+  useEffect(() => {
+    getUserBookedVehicleFn();
+  }, []);
 
-  
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+      console.log(error.message);
+    }
+  }, [error]);
+
+  //////  Actual data in  "userBookedData"
+  console.log(userBookedData);
+
   const user = {
     name: "abc",
     email: "abc@gmail.com",
@@ -13,7 +38,9 @@ export default function DashboardPage() {
     { id: 2, vehicle: "suzuki swift", date: "2025-04-20", status: "Completed" },
   ];
 
-  return (
+  return userDashboardLoading ? (
+    <div>Loading...</div>
+  ) : (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">User Dashboard</h1>
