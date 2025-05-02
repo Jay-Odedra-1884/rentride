@@ -9,8 +9,11 @@ import Image from "next/image";
 import { getOwnerDashboardData } from "../../actions/dashboard";
 
 export default async function Home() {
+
+  
     await  checkUser();
-    // await getOwnerDashboardData();
+  //  const data =  await getOwnerDashboardData();
+  //  console.log(data);
   return (
      <div>
        <NavBar />

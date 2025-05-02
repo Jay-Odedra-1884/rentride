@@ -93,6 +93,8 @@ function Vehicles() {
     fetchVehicles();
   }, []);
 
+  console.log(data);
+
   return data.length > 0 ? (
     <div className="container mx-auto px-4 py-10">
       {/* Title */}

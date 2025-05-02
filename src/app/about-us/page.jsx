@@ -7,7 +7,7 @@ const teamMembers = [
     name: "Bhargav Maru",
     role: "Full Stack Developer",
     image: "./bhargav_profile.jpeg",
-    bio: "Bhargav is responsible for building reliable and scalable backend systems. With expertise in Node.js and cloud architecture, she ensures data flows securely and efficiently across all services.",
+    bio: "Bhargav is the backend developer for this project, responsible for building robust server-side logic and APIs. He manages the entire backend architecture using Prisma ORM, ensuring smooth communication between the database and application while maintaining scalability, security, and performance.",
   },
   {
     name: "Jay Odedra",
