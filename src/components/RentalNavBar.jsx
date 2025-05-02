@@ -18,7 +18,7 @@ function RentalNavBar() {
       <div className="hidden lg:flex gap-8 text-center items-center justify-center">
         <div onClick={() => {router.push("/rental")}} className="cursor-pointer text-black hover:scale-110 transition-all duration-300">My Cars</div>
         <div onClick={() => {router.push("/vehicles")}} className="cursor-pointer text-black hover:scale-110 transition-all duration-300">Rides</div>
-        <div onClick={() => {router.push("")}} className="cursor-pointer text-white bg-black px-2 py-1 rounded-sm hover:scale-110 transition-all duration-300">Dashboard</div>
+        <div onClick={() => {router.push("/admin-dash")}} className="cursor-pointer text-white bg-black px-2 py-1 rounded-sm hover:scale-110 transition-all duration-300">Dashboard</div>
       </div>
     </div>
   )

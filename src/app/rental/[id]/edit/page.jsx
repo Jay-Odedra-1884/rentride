@@ -18,6 +18,7 @@ import { BarLoader } from "react-spinners";
 const formSchema = z.object({
   name: z.string().min(1, { message: "Car name is required" }),
   brandName: z.string().min(1, { message: "Brand name is required" }),
+  status: z.enum(["AVAILABLE", "MAINTAINANCE"]),
   imageUrl: z.string().url({ message: "Invalid URL" }),
   type: z.enum([
     "CAR",
@@ -76,6 +77,7 @@ function page() {
     defaultValues: {
       name: "",
       brandName: "",
+      status: "AVAILABLE",
       imageUrl: null,
       type: undefined,
       gearType: undefined,
@@ -190,7 +192,27 @@ function page() {
                       <p className="text-red-500">Please enter valid Brand</p>
                     )}
                   </div>
+
                 </div>
+                <div className="grid grid-cols-1 gap-4 mt-6">
+                    <select
+                      name="status"
+                      {...register("status", { required: true })}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition appearance-none bg-no-repeat"
+                      style={{
+                        backgroundImage:
+                          'url(\'data:image/svg+xml;charset=US-ASCII,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path d="M5 8l5 5 5-5z" fill="%23343a40"/></svg>\')',
+                        backgroundPosition: "right 0.5rem center",
+                        backgroundSize: "1.5em 1.5em",
+                      }}
+                    >
+                      <option value="AVAILABLE">Available ✅</option>
+                      <option value="MAINTAINANCE">Maintance 🛠️</option>
+                    </select>
+                    {errors.gearType && (
+                      <p className="text-red-500">Please select status</p>
+                    )}
+                  </div>
 
                 <div className="mb-6 mt-6">
                   <input
