@@ -142,7 +142,7 @@ function Vehicles() {
           {/* Date input */}
           <div className="flex items-center w-full sm:w-1/3">
             <input
-              type="date"
+              type="datetime-local"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               className="w-full bg-transparent text-base sm:text-lg text-gray-700 outline-none"

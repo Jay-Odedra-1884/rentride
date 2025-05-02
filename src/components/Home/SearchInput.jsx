@@ -47,7 +47,7 @@ function SearchInput() {
         <div className="h-1/2 border-2 border-gray-400"></div>
         <div className="w-2/5 h-full flex items-center">
           <input
-            type="date"
+            type="datetime-local"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             placeholder="Enter Date"
