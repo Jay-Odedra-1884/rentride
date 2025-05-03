@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import StarRating from "./Rating";
 import useFetch from "@/hooks/useFetch";
-import { createComment } from "../../actions/Comment";
+import { createComment, getAllCommentById } from "../../actions/Comment";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const CommentBox = () => {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(1);
-  const { id } = useParams();
-  const router = useRouter();
+  const { id:PostId } = useParams();
 
   const {
     data: NewComment,
@@ -21,11 +20,10 @@ const CommentBox = () => {
   const handleCommentSubmit = async () => {
     if (comment) {
       try {
-        await createCommentFn({ msg: comment, rating, vehicleId: id });
+        await createCommentFn({ msg: comment, rating, vehicleId: PostId });
         toast.success("Comment created");
         setComment("");
         setRating(0);
-        router.refresh();
       } catch (error) {
         toast.error(error.message);
       }

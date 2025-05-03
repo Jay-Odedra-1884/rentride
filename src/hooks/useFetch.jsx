@@ -14,11 +14,10 @@ function useFetch(cb) {
 
     try {
       const response = await cb(...arg);
-      console.log("✅ useFetch result:", response); 
       setData(response);
       setError(null);
+      return response
     } catch (error) {
-      console.error("❌ useFetch error:", error);
       setError(true);
       toast.error(error.message);
     } finally {

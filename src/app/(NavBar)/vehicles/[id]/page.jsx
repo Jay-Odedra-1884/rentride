@@ -20,6 +20,7 @@ import { BarLoader } from "react-spinners";
 import Script from 'next/script';
 import CommentBox from "@/components/CommentBox";
 import CommentDisplay from "@/components/CommentDisplay";
+import { useUser } from "@clerk/nextjs";
 
 const bookingSchema = z
   .object({
@@ -130,6 +131,28 @@ export default function CarDetail() {
     }
   }, [error]);
 
+
+  const { user, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <BarLoader color="#3b82f6" height={6} width={150} />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-600">
+        You must be signed in to view this page.
+      </div>
+    );
+  }
+
+  const currentUserClerkId = user.id;
+
+
   if (!data) {
     return (
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-30">
@@ -235,10 +258,10 @@ export default function CarDetail() {
       </div>
 
       {/* Comment Input */}
-      <CommentBox/>
+      <CommentBox />
       {/* Comment Display */}
-      <CommentDisplay/>
-      
+      <CommentDisplay currentUserClerkId={currentUserClerkId} />
+
       {/* Popup */}
       <dialog
         id="book_ride_form"
@@ -325,7 +348,6 @@ export default function CarDetail() {
               <div className="modal-action grid sm:grid-cols-2 gap-4">
                 <button
                   type="submit"
-                  
                   className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-md hover:shadow-lg"
                 >
                   {vehicleBookingLoading ? "Booking..." : "Book Ride"}
