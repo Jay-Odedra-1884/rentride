@@ -31,10 +31,11 @@ export default function DashboardPage() {
   const user = userBookedData?.user;
   const bookings = userBookedData?.bookings || [];
 
-  const activeCount = bookings.filter((b) => b.status === "Active").length;
+  const activeCount = bookings.filter((b) => b.status === "active").length;
   const completedCount = bookings.filter(
-    (b) => b.status === "Completed"
+    (b) => b.status === "completed"
   ).length;
+  const runningCount = bookings.filter((b) => b.status === "running").length;
 
   const router = useRouter();
 
@@ -118,9 +119,9 @@ export default function DashboardPage() {
                   </td>
                   <td
                     className={`px-2 py-1 text-sm font-medium ${
-                      booking.status === "Active"
+                      booking.status === "active"
                         ? "bg-gray-100 text-gray-700"
-                        : booking.status === "Completed"
+                        : booking.status === "completed"
                           ? "bg-green-100 text-green-800"
                           : "bg-yellow-100 text-yellow-800"
                     }`}
@@ -137,10 +138,14 @@ export default function DashboardPage() {
         </div>
 
         {/* booking counts */}
-        <div className="bg-white p-6 rounded-xl shadow mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+        <div className="bg-white p-6 rounded-xl shadow mb-6 grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
           <div>
             <h3 className="text-xl font-bold">{bookings.length}</h3>
             <p className="text-gray-600">Total Bookings</p>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold">{runningCount}</h3>
+            <p className="text-gray-600">Running</p>
           </div>
           <div>
             <h3 className="text-xl font-bold">{activeCount}</h3>
