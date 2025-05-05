@@ -44,8 +44,20 @@ function Vehicles() {
     }
   }, [searchParams]);
 
-  // Optional: You can also filter by selectedDate if needed
   useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const AllVehicle = await getAllVehicle();
+        setData(AllVehicle);
+      } catch (error) {
+        console.error("Error fetching vehicles:", error);
+      }
+    };
+    fetchVehicles();
+  }, []);
+
+  useEffect(() => {
+    // console.log(data);
     let filtered = data;
 
     if (filters.type && filters.type !== "") {
@@ -70,28 +82,35 @@ function Vehicles() {
       );
     }
 
-    // Location filter only when Search is clicked
-    if (searchTriggered && selectedLocation.trim() !== "") {
-      filtered = filtered.filter((vehicle) =>
-        vehicle.location.toLowerCase().includes(selectedLocation.toLowerCase())
-      );
+    // Ensure both location and date are selected before filtering
+    if (
+      searchTriggered &&
+      selectedLocation.trim() !== "" &&
+      selectedDate.trim() !== ""
+    ) {
+      const selectedTimestamp = new Date(selectedDate).getTime();
+
+      filtered = filtered.filter((vehicle) => {
+        const matchesLocation = vehicle.location
+          .toLowerCase()
+          .includes(selectedLocation.toLowerCase());
+
+        const availableStart = new Date(vehicle.startDate).getTime();
+        const availableEnd = new Date(vehicle.endDate).getTime();
+
+        const isAvailable =
+          selectedTimestamp <= availableStart &&
+          selectedTimestamp >= availableEnd;
+
+        return matchesLocation && isAvailable;
+      });
+    } else {
+      filtered = []; // Hide all vehicles unless location + date are entered
     }
 
     setFilteredData(filtered);
     setCurrentPage(1);
-  }, [data, filters, selectedLocation, searchTriggered]);
-
-  useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        const AllVehicle = await getAllVehicle();
-        setData(AllVehicle);
-      } catch (error) {
-        console.error("Error fetching vehicles:", error);
-      }
-    };
-    fetchVehicles();
-  }, []);
+  }, [data, filters, selectedLocation, selectedDate, searchTriggered]);
 
   console.log(data);
 
@@ -152,7 +171,7 @@ function Vehicles() {
           {/* Search button */}
           <button
             onClick={() => {
-              const query = new URLSearchParams(); //to change url data of location
+              const query = new URLSearchParams();
               if (selectedLocation) query.set("location", selectedLocation);
               if (selectedDate) query.set("date", selectedDate);
               router.push(`/vehicles?${query.toString()}`);
@@ -182,28 +201,27 @@ function Vehicles() {
         </button>
       </div>
 
-      {/* Main content area with sidebar and product grid */}
-      {/* Sidebar - hidden on mobile unless toggled */}
+      {/* Main content */}
       <div className="flex flex-col md:flex-row gap-6">
+        {/* Sidebar */}
         <div
-          className={`md:w-72 shrink-0  ${isSidebarOpen ? "block" : "hidden md:block"}`}
+          className={`md:w-72 shrink-0 ${isSidebarOpen ? "block" : "hidden md:block"}`}
         >
           <div className="bg-white rounded-lg shadow-md p-4 sticky top-4">
             <SideBar onFilterChange={setFilters} />
           </div>
         </div>
 
-        {/* Product grid - responsive layout */}
-        {filteredData.length > 0 ? (
-          <div>
+        {/* Vehicle Grid Logic */}
+        {selectedLocation && selectedDate ? (
+          filteredData.length > 0 ? (
             <div className="flex-1">
               <div className="flex flex-wrap justify-center gap-4">
                 {paginatedVehicles.map((vehicle, index) => (
                   <Card key={index} data={vehicle} />
                 ))}
               </div>
-            </div>
-            <div className="mt-8 flex justify-center">
+              {/* Pagination */}
               <div className="mt-8 flex justify-center">
                 <nav className="flex items-center space-x-2">
                   <button
@@ -236,10 +254,14 @@ function Vehicles() {
                 </nav>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="text-center text-xl mt-10">
+              No vehicles available for the selected location and time.
+            </div>
+          )
         ) : (
-          <div className="w-full text-2xl text-center">
-            <h2>OPPS! sorry there is no vehicle availabale right now</h2>
+          <div className="text-center text-xl mt-10 text-gray-500">
+            Please enter location and date to view available vehicles.
           </div>
         )}
       </div>
