@@ -65,7 +65,6 @@ export default function CarDetail() {
         const vehicle = await getVehicleById(id);
         setData(vehicle);
         console.log(vehicle);
-        console.log("i am here");
       } catch (error) {
         console.error("Error fetching vehicles:", error);
       }
@@ -91,12 +90,12 @@ export default function CarDetail() {
     resolver: zodResolver(bookingSchema),
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (d) => {
 
     const res = await fetch("/api/order", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount: 500 }),
+          body: JSON.stringify({ amount: data.price }),
         });
     
         const order = await res.json();
@@ -110,7 +109,7 @@ export default function CarDetail() {
           order_id: order.id,
           handler: async function (response) {
             toast.success(`Payment successful! Payment ID: ${response.razorpay_payment_id}`);
-            await bookVehicleFn(data, id);
+            await bookVehicleFn(d, id);
             toast.success("Your Ride is Booked");
 
           },
