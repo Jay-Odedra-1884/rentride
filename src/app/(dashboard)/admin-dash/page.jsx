@@ -6,6 +6,7 @@ import { getOwnerDashboardData } from "../../../../actions/dashboard";
 import { toast } from "sonner";
 import { getVehicleByOwnerId } from "../../../../actions/vehicle";
 import { useRouter } from "next/navigation";
+import { BarLoader } from "react-spinners";
 
 const AdminDash = () => {
   const [data, setData] = useState([]);
@@ -47,7 +48,9 @@ const AdminDash = () => {
   return (
     <div>
       {ownerDashboardLoading || !ownerDashboardData ? (
-        "Loading..."
+        <div className="min-h-screen flex items-center justify-center">
+        <BarLoader color="#3b82f6" height={6} width={150} />
+      </div>
       ) : (
         <div className="p-4">
           {console.log(ownerDashboardData)}
