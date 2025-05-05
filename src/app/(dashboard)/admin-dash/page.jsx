@@ -24,7 +24,7 @@ const AdminDash = () => {
       }
     };
     fetchVehicles();
-  });
+  }, []);
 
   const {
     data: ownerDashboardData,
@@ -53,7 +53,7 @@ const AdminDash = () => {
           {console.log(ownerDashboardData)}
           {console.log("All vehicles : ", data)}
           <div className="flex gap-2 items-center">
-          <button onClick={() => {router.push("/rental")}} className="bg-black text-white px-2 py-1 rounded-md"><i class="fa-solid fa-arrow-left"></i></button>
+          <button onClick={() => {router.push("/rental")}} className="bg-black text-white px-2 py-1 rounded-md"><i className="fa-solid fa-arrow-left"></i></button>
           <h2 className="text-2xl font-semibold">Dashboard</h2>
           </div>
           <hr className="mt-3" />
@@ -77,7 +77,7 @@ const AdminDash = () => {
               </span>
             </div>
           </div>
-          <div className="bg-gray-100 p-5 rounded-xl shadow mt-3">
+          <div className="bg-gray-100 p-5 rounded-xl shadow mt-3 overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4">Currunt Bookings</h2>
             <table className="w-full text-left border bg-white">
               <thead className="bg-blue-100">
@@ -124,7 +124,7 @@ const AdminDash = () => {
             </table>
           </div>
 
-          <div className="bg-gray-100 p-5 rounded-xl shadow mt-3">
+          <div className="bg-gray-100 p-5 rounded-xl shadow mt-3 overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4">Cars status</h2>
             <table className="w-full text-left border bg-white">
               <thead className="bg-blue-100">
