@@ -14,6 +14,7 @@ function Vehicles() {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [filters, setFilters] = useState({});
+  console.log(data)
 
   // for multiple vehicle cards
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,63 +57,119 @@ function Vehicles() {
     fetchVehicles();
   }, []);
 
-  useEffect(() => {
-    // console.log(data);
-    let filtered = data;
+  // useEffect(() => {
+  //   // console.log(data);
+  //   let filtered = data;
 
-    if (filters.type && filters.type !== "") {
+  //   if (filters.type && filters.type !== "") {
+  //     filtered = filtered.filter((vehicle) => vehicle.type === filters.type);
+  //   }
+
+  //   if (filters.gearType) {
+  //     filtered = filtered.filter(
+  //       (vehicle) => vehicle.gearType === filters.gearType
+  //     );
+  //   }
+
+  //   if (filters.minPrice) {
+  //     filtered = filtered.filter(
+  //       (vehicle) => vehicle.price >= filters.minPrice
+  //     );
+  //   }
+
+  //   if (filters.maxPrice) {
+  //     filtered = filtered.filter(
+  //       (vehicle) => vehicle.price <= filters.maxPrice
+  //     );
+  //   }
+
+  //   // Ensure both location and date are selected before filtering
+  //   if (
+  //     searchTriggered &&
+  //     selectedLocation.trim() !== "" &&
+  //     selectedDate.trim() !== ""
+  //   ) {
+  //     const selectedTimestamp = new Date(selectedDate).getTime();
+
+  //     filtered = filtered.filter((vehicle) => {
+  //       const matchesLocation = vehicle.location
+  //         .toLowerCase()
+  //         .includes(selectedLocation.toLowerCase());
+
+  //       const availableStart = new Date(vehicle.startTime).getTime();
+  //       const availableEnd = new Date(vehicle.endTime).getTime();
+
+  //       const selectedTimestamp = new Date(selectedDate).getTime();
+
+  //       const isAvailable =
+  //         selectedTimestamp < availableStart &&
+  //         selectedTimestamp > availableEnd;
+
+  //       return matchesLocation && isAvailable;
+  //     });
+  //   } else {
+  //     filtered = []; // Hide all vehicles unless location + date are entered
+  //   }
+
+  //   setFilteredData(filtered);
+  //   setCurrentPage(1);
+  // }, [data, filters, selectedLocation, selectedDate, searchTriggered]);
+
+
+  useEffect(() => {
+    let filtered = data;
+  
+    if (filters.type) {
       filtered = filtered.filter((vehicle) => vehicle.type === filters.type);
     }
-
+  
     if (filters.gearType) {
-      filtered = filtered.filter(
-        (vehicle) => vehicle.gearType === filters.gearType
-      );
+      filtered = filtered.filter((vehicle) => vehicle.gearType === filters.gearType);
     }
-
+  
     if (filters.minPrice) {
-      filtered = filtered.filter(
-        (vehicle) => vehicle.price >= filters.minPrice
-      );
+      filtered = filtered.filter((vehicle) => vehicle.price >= filters.minPrice);
     }
-
+  
     if (filters.maxPrice) {
-      filtered = filtered.filter(
-        (vehicle) => vehicle.price <= filters.maxPrice
-      );
+      filtered = filtered.filter((vehicle) => vehicle.price <= filters.maxPrice);
     }
-
-    // Ensure both location and date are selected before filtering
+  
+    // Location + Date Filtering
     if (
       searchTriggered &&
       selectedLocation.trim() !== "" &&
       selectedDate.trim() !== ""
     ) {
       const selectedTimestamp = new Date(selectedDate).getTime();
-
+  
       filtered = filtered.filter((vehicle) => {
         const matchesLocation = vehicle.location
           .toLowerCase()
           .includes(selectedLocation.toLowerCase());
-
-        const availableStart = new Date(vehicle.startDate).getTime();
-        const availableEnd = new Date(vehicle.endDate).getTime();
-
-        const isAvailable =
-          selectedTimestamp <= availableStart &&
-          selectedTimestamp >= availableEnd;
-
+  
+        const isAvailable = vehicle.bookings.every((booking) => {
+          const bookingStart = new Date(booking.startTime).getTime();
+          const bookingEnd = new Date(booking.endTime).getTime();
+  
+          // selected time must not overlap any booking
+          return (
+            selectedTimestamp < bookingStart || selectedTimestamp > bookingEnd
+          );
+        });
+  
         return matchesLocation && isAvailable;
       });
     } else {
-      filtered = []; // Hide all vehicles unless location + date are entered
+      filtered = [];
     }
-
+  
     setFilteredData(filtered);
     setCurrentPage(1);
   }, [data, filters, selectedLocation, selectedDate, searchTriggered]);
-
-  console.log(data);
+  
+  console.log(filteredData);
+  // console.log(data);
 
   return data.length > 0 ? (
     <div className="container mx-auto px-4 py-10">
